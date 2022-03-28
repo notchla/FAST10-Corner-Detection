@@ -1,0 +1,49 @@
+CXXFLAGS=@CXXFLAGS@
+CFLAGS=@CXXFLAGS@
+LDFLAGS=@LDFLAGS@
+CXX=@CXX@
+
+PROGS=learn_detector warp_to_png image_warp test_repeatability learn_fast_tree fast_N_features extract_features
+
+.PHONY: all clean
+
+all:$(PROGS)
+
+learn_detector_orig:learn_detector_orig.o
+	$(CXX) -o $@ $^ $(LDFLAGS) 
+
+
+learn_detector:offsets.o faster_bytecode.o faster_tree.o learn_detector.o load_data.o	
+	$(CXX) -o $@ $^ $(LDFLAGS) 
+
+learn_fast_tree:learn_fast_tree.o
+	$(CXX) -o $@ $^ $(LDFLAGS) 
+
+fast_N_features:fast_N_features.o
+	$(CXX) -o $@ $^ $(LDFLAGS) 
+
+warp_to_png:warp_to_png.o
+	$(CXX) -o $@ $^ $(LDFLAGS) 
+
+image_warp:image_warp.o load_data.o
+	$(CXX) -o $@ $^ $(LDFLAGS) 
+
+test_repeatability:test_repeatability.o load_data.o detectors.o harrislike.o dog.o cvd_fast.o  faster_tree.o   faster_detector.o offsets.o faster_bytecode.o @susan@
+	$(CXX) -o $@ $^ $(LDFLAGS) 
+
+extract_features:extract_features.o faster_tree.o  offsets.o faster_bytecode.o 
+	$(CXX) -o $@ $^ $(LDFLAGS) 
+
+mod_susan.c:susan2l.c susan.patch
+	cp susan2l.c mod_susan.c
+	patch mod_susan.c susan.patch
+
+clean:
+	rm -f $(PROGS) *.o
+
+docs:
+	doxygen
+
+distclean: clean
+	rm -fr autom4te.cache  config.status config.log Makefile
+

@@ -1,0 +1,3 @@
+\form#0:$(x, y)$
+\form#1:$x = \frac{\text{red}}{\text{MULTIPLIER}} - \text{SHIFT}$
+\form#2:$y = \frac{\text{green}}{\text{MULTIPLIER}} - \text{SHIFT}$

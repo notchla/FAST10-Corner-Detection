@@ -1,0 +1,3015 @@
+16
+[0 3] [1 3] [2 2] [3 1] [3 0] [3 -1] [2 -2] [1 -3] [0 -3] [-1 -3] [-2 -2] [-3 -1] [-3 0] [-3 1] [-2 2] [-1 3] 
+if_brighter 0 14348907 14348907 14348907
+ if_brighter 1 4782969 4782969 4782969
+  if_brighter 2 1594323 1594323 1594323
+   if_brighter 3 531441 531441 531441
+    if_brighter 4 177147 177147 177147
+     if_brighter 5 59049 59049 59049
+      if_brighter 6 19683 19683 19683
+       if_brighter 7 6561 13122
+        if_brighter 8 2187 4374
+         if_brighter 9 729 1458
+          corner
+         else
+          if_brighter 15 243 486
+           corner
+          else
+           background
+          end
+         end
+        else
+         if_brighter 14 729 1458
+          if_brighter 15 243 486
+           corner
+          else
+           background
+          end
+         else
+          background
+         end
+        end
+       else
+        if_brighter 13 2187 4374
+         if_brighter 14 729 1458
+          if_brighter 15 243 486
+           corner
+          else
+           background
+          end
+         else
+          background
+         end
+        else
+         background
+        end
+       end
+      elsf_darker 6
+       if_brighter 12 6561 6561 6561
+        if_brighter 13 2187 4374
+         if_brighter 14 729 1458
+          if_brighter 15 243 486
+           corner
+          else
+           background
+          end
+         else
+          background
+         end
+        else
+         background
+        end
+       elsf_darker 12
+        if_darker 7 2187 4374
+         if_darker 8 729 1458
+          if_darker 9 243 486
+           if_darker 10 81 162
+            if_darker 11 27 54
+             if_darker 13 9 18
+              if_darker 14 3 6
+               if_darker 15 1 2
+                corner
+               else
+                background
+               end
+              else
+               background
+              end
+             else
+              background
+             end
+            else
+             background
+            end
+           else
+            background
+           end
+          else
+           background
+          end
+         else
+          background
+         end
+        else
+         background
+        end
+       else
+        background
+       end
+      else
+       if_brighter 12 6561 13122
+        if_brighter 13 2187 4374
+         if_brighter 14 729 1458
+          if_brighter 15 243 486
+           corner
+          else
+           background
+          end
+         else
+          background
+         end
+        else
+         background
+        end
+       else
+        background
+       end
+      end
+     elsf_darker 5
+      if_brighter 15 19683 39366
+       if_brighter 11 6561 6561 6561
+        if_brighter 12 2187 4374
+         if_brighter 13 729 1458
+          if_brighter 14 243 486
+           corner
+          else
+           background
+          end
+         else
+          background
+         end
+        else
+         background
+        end
+       elsf_darker 11
+        if_darker 6 2187 4374
+         if_darker 7 729 1458
+          if_darker 8 243 486
+           if_darker 9 81 162
+            if_darker 10 27 54
+             if_darker 12 9 18
+              if_darker 13 3 6
+               if_darker 14 1 2
+                corner
+               else
+                background
+               end
+              else
+               background
+              end
+             else
+              background
+             end
+            else
+             background
+            end
+           else
+            background
+           end
+          else
+           background
+          end
+         else
+          background
+         end
+        else
+         background
+        end
+       else
+        background
+       end
+      else
+       if_darker 6 6561 13122
+        if_darker 7 2187 4374
+         if_darker 8 729 1458
+          if_darker 9 243 486
+           if_darker 10 81 162
+            if_darker 11 27 54
+             if_darker 12 9 18
+              if_darker 13 3 6
+               if_darker 14 1 2
+                corner
+               else
+                background
+               end
+              else
+               background
+              end
+             else
+              background
+             end
+            else
+             background
+            end
+           else
+            background
+           end
+          else
+           background
+          end
+         else
+          background
+         end
+        else
+         background
+        end
+       else
+        background
+       end
+      end
+     else
+      if_brighter 11 19683 19683 19683
+       if_brighter 12 6561 13122
+        if_brighter 13 2187 4374
+         if_brighter 14 729 1458
+          if_brighter 15 243 486
+           corner
+          else
+           background
+          end
+         else
+          background
+         end
+        else
+         background
+        end
+       else
+        background
+       end
+      elsf_darker 11
+       if_darker 6 6561 13122
+        if_darker 7 2187 4374
+         if_darker 8 729 1458
+          if_darker 9 243 486
+           if_darker 10 81 162
+            if_darker 12 27 54
+             if_darker 13 9 18
+              if_darker 14 3 6
+               if_darker 15 1 2
+                corner
+               else
+                background
+               end
+              else
+               background
+              end
+             else
+              background
+             end
+            else
+             background
+            end
+           else
+            background
+           end
+          else
+           background
+          end
+         else
+          background
+         end
+        else
+         background
+        end
+       else
+        background
+       end
+      else
+       background
+      end
+     end
+    elsf_darker 4
+     if_brighter 14 59049 59049 59049
+      if_brighter 10 19683 19683 19683
+       if_brighter 11 6561 13122
+        if_brighter 12 2187 4374
+         if_brighter 13 729 1458
+          if_brighter 15 243 486
+           corner
+          else
+           if_brighter 5 81 162
+            if_brighter 6 27 54
+             if_brighter 7 9 18
+              if_brighter 8 3 6
+               if_brighter 9 1 2
+                corner
+               else
+                background
+               end
+              else
+               background
+              end
+             else
+              background
+             end
+            else
+             background
+            end
+           else
+            background
+           end
+          end
+         else
+          background
+         end
+        else
+         background
+        end
+       else
+        background
+       end
+      elsf_darker 10
+       if_darker 5 6561 13122
+        if_darker 6 2187 4374
+         if_darker 7 729 1458
+          if_darker 8 243 486
+           if_darker 9 81 162
+            if_darker 11 27 54
+             if_darker 12 9 18
+              if_darker 13 3 6
+               corner
+              else
+               background
+              end
+             else
+              background
+             end
+            else
+             background
+            end
+           else
+            background
+           end
+          else
+           background
+          end
+         else
+          background
+         end
+        else
+         background
+        end
+       else
+        background
+       end
+      else
+       background
+      end
+     elsf_darker 14
+      if_darker 6 19683 39366
+       if_darker 7 6561 13122
+        if_darker 8 2187 4374
+         if_darker 9 729 1458
+          if_darker 10 243 486
+           if_darker 11 81 162
+            if_darker 12 27 54
+             if_darker 13 9 18
+              if_darker 5 3 6
+               corner
+              else
+               if_darker 15 1 2
+                corner
+               else
+                background
+               end
+              end
+             else
+              background
+             end
+            else
+             background
+            end
+           else
+            background
+           end
+          else
+           background
+          end
+         else
+          background
+         end
+        else
+         background
+        end
+       else
+        background
+       end
+      else
+       background
+      end
+     else
+      if_darker 5 19683 39366
+       if_darker 6 6561 13122
+        if_darker 7 2187 4374
+         if_darker 8 729 1458
+          if_darker 9 243 486
+           if_darker 10 81 162
+            if_darker 11 27 54
+             if_darker 12 9 18
+              if_darker 13 3 6
+               corner
+              else
+               background
+              end
+             else
+              background
+             end
+            else
+             background
+            end
+           else
+            background
+           end
+          else
+           background
+          end
+         else
+          background
+         end
+        else
+         background
+        end
+       else
+        background
+       end
+      else
+       background
+      end
+     end
+    else
+     if_brighter 10 59049 59049 59049
+      if_brighter 11 19683 39366
+       if_brighter 12 6561 13122
+        if_brighter 13 2187 4374
+         if_brighter 14 729 1458
+          if_brighter 15 243 486
+           corner
+          else
+           if_brighter 5 81 162
+            if_brighter 6 27 54
+             if_brighter 7 9 18
+              if_brighter 8 3 6
+               if_brighter 9 1 2
+                corner
+               else
+                background
+               end
+              else
+               background
+              end
+             else
+              background
+             end
+            else
+             background
+            end
+           else
+            background
+           end
+          end
+         else
+          background
+         end
+        else
+         background
+        end
+       else
+        background
+       end
+      else
+       background
+      end
+     elsf_darker 10
+      if_darker 6 19683 39366
+       if_darker 7 6561 13122
+        if_darker 8 2187 4374
+         if_darker 9 729 1458
+          if_darker 11 243 486
+           if_darker 12 81 162
+            if_darker 13 27 54
+             if_darker 14 9 18
+              if_darker 5 3 6
+               corner
+              else
+               if_darker 15 1 2
+                corner
+               else
+                background
+               end
+              end
+             else
+              background
+             end
+            else
+             background
+            end
+           else
+            background
+           end
+          else
+           background
+          end
+         else
+          background
+         end
+        else
+         background
+        end
+       else
+        background
+       end
+      else
+       background
+      end
+     else
+      background
+     end
+    end
+   elsf_darker 3
+    if_brighter 9 177147 177147 177147
+     if_brighter 10 59049 118098
+      if_brighter 11 19683 39366
+       if_brighter 12 6561 13122
+        if_brighter 13 2187 4374
+         if_brighter 14 729 1458
+          if_brighter 15 243 486
+           corner
+          else
+           if_brighter 5 81 162
+            if_brighter 6 27 54
+             if_brighter 7 9 18
+              if_brighter 8 3 6
+               corner
+              else
+               background
+              end
+             else
+              background
+             end
+            else
+             background
+            end
+           else
+            background
+           end
+          end
+         else
+          if_brighter 4 243 486
+           if_brighter 5 81 162
+            if_brighter 6 27 54
+             if_brighter 7 9 18
+              if_brighter 8 3 6
+               corner
+              else
+               background
+              end
+             else
+              background
+             end
+            else
+             background
+            end
+           else
+            background
+           end
+          else
+           background
+          end
+         end
+        else
+         background
+        end
+       else
+        background
+       end
+      else
+       background
+      end
+     else
+      background
+     end
+    elsf_darker 9
+     if_darker 6 59049 118098
+      if_darker 7 19683 39366
+       if_darker 8 6561 13122
+        if_darker 10 2187 4374
+         if_darker 11 729 1458
+          if_darker 12 243 486
+           if_darker 5 81 162
+            if_darker 4 27 54
+             corner
+            else
+             if_darker 13 9 18
+              if_darker 14 3 6
+               corner
+              else
+               background
+              end
+             else
+              background
+             end
+            end
+           else
+            if_darker 13 27 54
+             if_darker 14 9 18
+              if_darker 15 3 6
+               corner
+              else
+               background
+              end
+             else
+              background
+             end
+            else
+             background
+            end
+           end
+          else
+           background
+          end
+         else
+          background
+         end
+        else
+         background
+        end
+       else
+        background
+       end
+      else
+       background
+      end
+     else
+      background
+     end
+    else
+     background
+    end
+   else
+    if_brighter 9 177147 177147 177147
+     if_brighter 10 59049 118098
+      if_brighter 11 19683 39366
+       if_brighter 12 6561 13122
+        if_brighter 13 2187 4374
+         if_brighter 14 729 1458
+          if_brighter 15 243 486
+           corner
+          else
+           if_brighter 5 81 162
+            if_brighter 6 27 54
+             if_brighter 7 9 18
+              if_brighter 8 3 6
+               corner
+              else
+               background
+              end
+             else
+              background
+             end
+            else
+             background
+            end
+           else
+            background
+           end
+          end
+         else
+          if_brighter 4 243 486
+           if_brighter 5 81 162
+            if_brighter 6 27 54
+             if_brighter 7 9 18
+              if_brighter 8 3 6
+               corner
+              else
+               background
+              end
+             else
+              background
+             end
+            else
+             background
+            end
+           else
+            background
+           end
+          else
+           background
+          end
+         end
+        else
+         background
+        end
+       else
+        background
+       end
+      else
+       background
+      end
+     else
+      background
+     end
+    elsf_darker 9
+     if_darker 6 59049 118098
+      if_darker 7 19683 39366
+       if_darker 8 6561 13122
+        if_darker 10 2187 4374
+         if_darker 11 729 1458
+          if_darker 12 243 486
+           if_darker 13 81 162
+            if_darker 5 27 54
+             if_darker 4 9 18
+              corner
+             else
+              if_darker 14 3 6
+               corner
+              else
+               background
+              end
+             end
+            else
+             if_darker 14 9 18
+              if_darker 15 3 6
+               corner
+              else
+               background
+              end
+             else
+              background
+             end
+            end
+           else
+            background
+           end
+          else
+           background
+          end
+         else
+          background
+         end
+        else
+         background
+        end
+       else
+        background
+       end
+      else
+       background
+      end
+     else
+      background
+     end
+    else
+     background
+    end
+   end
+  elsf_darker 2
+   if_brighter 8 531441 531441 531441
+    if_brighter 9 177147 354294
+     if_brighter 10 59049 118098
+      if_brighter 11 19683 39366
+       if_brighter 12 6561 13122
+        if_brighter 13 2187 4374
+         if_brighter 14 729 1458
+          if_brighter 15 243 486
+           corner
+          else
+           if_brighter 5 81 162
+            if_brighter 6 27 54
+             if_brighter 7 9 18
+              corner
+             else
+              background
+             end
+            else
+             background
+            end
+           else
+            background
+           end
+          end
+         else
+          if_brighter 4 243 486
+           if_brighter 5 81 162
+            if_brighter 6 27 54
+             if_brighter 7 9 18
+              corner
+             else
+              background
+             end
+            else
+             background
+            end
+           else
+            background
+           end
+          else
+           background
+          end
+         end
+        else
+         if_brighter 3 729 1458
+          if_brighter 4 243 486
+           if_brighter 5 81 162
+            if_brighter 6 27 54
+             if_brighter 7 9 18
+              corner
+             else
+              background
+             end
+            else
+             background
+            end
+           else
+            background
+           end
+          else
+           background
+          end
+         else
+          background
+         end
+        end
+       else
+        background
+       end
+      else
+       background
+      end
+     else
+      background
+     end
+    else
+     background
+    end
+   elsf_darker 8
+    if_darker 6 177147 354294
+     if_darker 7 59049 118098
+      if_darker 9 19683 39366
+       if_darker 10 6561 13122
+        if_darker 11 2187 4374
+         if_darker 5 729 1458
+          if_darker 4 243 486
+           if_darker 3 81 162
+            corner
+           else
+            if_darker 12 27 54
+             if_darker 13 9 18
+              corner
+             else
+              background
+             end
+            else
+             background
+            end
+           end
+          else
+           if_darker 12 81 162
+            if_darker 13 27 54
+             if_darker 14 9 18
+              corner
+             else
+              background
+             end
+            else
+             background
+            end
+           else
+            background
+           end
+          end
+         else
+          if_darker 12 243 486
+           if_darker 13 81 162
+            if_darker 14 27 54
+             if_darker 15 9 18
+              corner
+             else
+              background
+             end
+            else
+             background
+            end
+           else
+            background
+           end
+          else
+           background
+          end
+         end
+        else
+         background
+        end
+       else
+        background
+       end
+      else
+       background
+      end
+     else
+      background
+     end
+    else
+     background
+    end
+   else
+    background
+   end
+  else
+   if_brighter 8 531441 531441 531441
+    if_brighter 9 177147 354294
+     if_brighter 10 59049 118098
+      if_brighter 11 19683 39366
+       if_brighter 12 6561 13122
+        if_brighter 13 2187 4374
+         if_brighter 14 729 1458
+          if_brighter 15 243 486
+           corner
+          else
+           if_brighter 5 81 162
+            if_brighter 6 27 54
+             if_brighter 7 9 18
+              corner
+             else
+              background
+             end
+            else
+             background
+            end
+           else
+            background
+           end
+          end
+         else
+          if_brighter 4 243 486
+           if_brighter 5 81 162
+            if_brighter 6 27 54
+             if_brighter 7 9 18
+              corner
+             else
+              background
+             end
+            else
+             background
+            end
+           else
+            background
+           end
+          else
+           background
+          end
+         end
+        else
+         if_brighter 3 729 1458
+          if_brighter 4 243 486
+           if_brighter 5 81 162
+            if_brighter 6 27 54
+             if_brighter 7 9 18
+              corner
+             else
+              background
+             end
+            else
+             background
+            end
+           else
+            background
+           end
+          else
+           background
+          end
+         else
+          background
+         end
+        end
+       else
+        background
+       end
+      else
+       background
+      end
+     else
+      background
+     end
+    else
+     background
+    end
+   elsf_darker 8
+    if_darker 6 177147 354294
+     if_darker 7 59049 118098
+      if_darker 9 19683 39366
+       if_darker 10 6561 13122
+        if_darker 11 2187 4374
+         if_darker 12 729 1458
+          if_darker 5 243 486
+           if_darker 4 81 162
+            if_darker 3 27 54
+             corner
+            else
+             if_darker 13 9 18
+              corner
+             else
+              background
+             end
+            end
+           else
+            if_darker 13 27 54
+             if_darker 14 9 18
+              corner
+             else
+              background
+             end
+            else
+             background
+            end
+           end
+          else
+           if_darker 13 81 162
+            if_darker 14 27 54
+             if_darker 15 9 18
+              corner
+             else
+              background
+             end
+            else
+             background
+            end
+           else
+            background
+           end
+          end
+         else
+          background
+         end
+        else
+         background
+        end
+       else
+        background
+       end
+      else
+       background
+      end
+     else
+      background
+     end
+    else
+     background
+    end
+   else
+    background
+   end
+  end
+ elsf_darker 1
+  if_brighter 7 1594323 1594323 1594323
+   if_brighter 8 531441 1062882
+    if_brighter 9 177147 354294
+     if_brighter 10 59049 118098
+      if_brighter 11 19683 39366
+       if_brighter 12 6561 13122
+        if_brighter 13 2187 4374
+         if_brighter 14 729 1458
+          if_brighter 15 243 486
+           corner
+          else
+           if_brighter 5 81 162
+            if_brighter 6 27 54
+             corner
+            else
+             background
+            end
+           else
+            background
+           end
+          end
+         else
+          if_brighter 4 243 486
+           if_brighter 5 81 162
+            if_brighter 6 27 54
+             corner
+            else
+             background
+            end
+           else
+            background
+           end
+          else
+           background
+          end
+         end
+        else
+         if_brighter 3 729 1458
+          if_brighter 4 243 486
+           if_brighter 5 81 162
+            if_brighter 6 27 54
+             corner
+            else
+             background
+            end
+           else
+            background
+           end
+          else
+           background
+          end
+         else
+          background
+         end
+        end
+       else
+        if_brighter 2 2187 4374
+         if_brighter 3 729 1458
+          if_brighter 4 243 486
+           if_brighter 5 81 162
+            if_brighter 6 27 54
+             corner
+            else
+             background
+            end
+           else
+            background
+           end
+          else
+           background
+          end
+         else
+          background
+         end
+        else
+         background
+        end
+       end
+      else
+       background
+      end
+     else
+      background
+     end
+    else
+     background
+    end
+   else
+    background
+   end
+  elsf_darker 7
+   if_darker 6 531441 1062882
+    if_darker 8 177147 354294
+     if_darker 9 59049 118098
+      if_darker 10 19683 39366
+       if_darker 5 6561 13122
+        if_darker 4 2187 4374
+         if_darker 3 729 1458
+          if_darker 2 243 486
+           corner
+          else
+           if_darker 11 81 162
+            if_darker 12 27 54
+             corner
+            else
+             background
+            end
+           else
+            background
+           end
+          end
+         else
+          if_darker 11 243 486
+           if_darker 12 81 162
+            if_darker 13 27 54
+             corner
+            else
+             background
+            end
+           else
+            background
+           end
+          else
+           background
+          end
+         end
+        else
+         if_darker 11 729 1458
+          if_darker 12 243 486
+           if_darker 13 81 162
+            if_darker 14 27 54
+             corner
+            else
+             background
+            end
+           else
+            background
+           end
+          else
+           background
+          end
+         else
+          background
+         end
+        end
+       else
+        if_darker 11 2187 4374
+         if_darker 12 729 1458
+          if_darker 13 243 486
+           if_darker 14 81 162
+            if_darker 15 27 54
+             corner
+            else
+             background
+            end
+           else
+            background
+           end
+          else
+           background
+          end
+         else
+          background
+         end
+        else
+         background
+        end
+       end
+      else
+       background
+      end
+     else
+      background
+     end
+    else
+     background
+    end
+   else
+    background
+   end
+  else
+   background
+  end
+ else
+  if_brighter 7 1594323 1594323 1594323
+   if_brighter 8 531441 1062882
+    if_brighter 9 177147 354294
+     if_brighter 10 59049 118098
+      if_brighter 11 19683 39366
+       if_brighter 12 6561 13122
+        if_brighter 13 2187 4374
+         if_brighter 14 729 1458
+          if_brighter 15 243 486
+           corner
+          else
+           if_brighter 5 81 162
+            if_brighter 6 27 54
+             corner
+            else
+             background
+            end
+           else
+            background
+           end
+          end
+         else
+          if_brighter 4 243 486
+           if_brighter 5 81 162
+            if_brighter 6 27 54
+             corner
+            else
+             background
+            end
+           else
+            background
+           end
+          else
+           background
+          end
+         end
+        else
+         if_brighter 3 729 1458
+          if_brighter 4 243 486
+           if_brighter 5 81 162
+            if_brighter 6 27 54
+             corner
+            else
+             background
+            end
+           else
+            background
+           end
+          else
+           background
+          end
+         else
+          background
+         end
+        end
+       else
+        if_brighter 2 2187 4374
+         if_brighter 3 729 1458
+          if_brighter 4 243 486
+           if_brighter 5 81 162
+            if_brighter 6 27 54
+             corner
+            else
+             background
+            end
+           else
+            background
+           end
+          else
+           background
+          end
+         else
+          background
+         end
+        else
+         background
+        end
+       end
+      else
+       background
+      end
+     else
+      background
+     end
+    else
+     background
+    end
+   else
+    background
+   end
+  elsf_darker 7
+   if_darker 6 531441 1062882
+    if_darker 8 177147 354294
+     if_darker 9 59049 118098
+      if_darker 10 19683 39366
+       if_darker 11 6561 13122
+        if_darker 5 2187 4374
+         if_darker 4 729 1458
+          if_darker 3 243 486
+           if_darker 2 81 162
+            corner
+           else
+            if_darker 12 27 54
+             corner
+            else
+             background
+            end
+           end
+          else
+           if_darker 12 81 162
+            if_darker 13 27 54
+             corner
+            else
+             background
+            end
+           else
+            background
+           end
+          end
+         else
+          if_darker 12 243 486
+           if_darker 13 81 162
+            if_darker 14 27 54
+             corner
+            else
+             background
+            end
+           else
+            background
+           end
+          else
+           background
+          end
+         end
+        else
+         if_darker 12 729 1458
+          if_darker 13 243 486
+           if_darker 14 81 162
+            if_darker 15 27 54
+             corner
+            else
+             background
+            end
+           else
+            background
+           end
+          else
+           background
+          end
+         else
+          background
+         end
+        end
+       else
+        background
+       end
+      else
+       background
+      end
+     else
+      background
+     end
+    else
+     background
+    end
+   else
+    background
+   end
+  else
+   background
+  end
+ end
+elsf_darker 0
+ if_brighter 1 4782969 4782969 4782969
+  if_brighter 7 1594323 1594323 1594323
+   if_brighter 6 531441 1062882
+    if_brighter 8 177147 354294
+     if_brighter 9 59049 118098
+      if_brighter 10 19683 39366
+       if_brighter 5 6561 13122
+        if_brighter 4 2187 4374
+         if_brighter 3 729 1458
+          if_brighter 2 243 486
+           corner
+          else
+           if_brighter 11 81 162
+            if_brighter 12 27 54
+             corner
+            else
+             background
+            end
+           else
+            background
+           end
+          end
+         else
+          if_brighter 11 243 486
+           if_brighter 12 81 162
+            if_brighter 13 27 54
+             corner
+            else
+             background
+            end
+           else
+            background
+           end
+          else
+           background
+          end
+         end
+        else
+         if_brighter 11 729 1458
+          if_brighter 12 243 486
+           if_brighter 13 81 162
+            if_brighter 14 27 54
+             corner
+            else
+             background
+            end
+           else
+            background
+           end
+          else
+           background
+          end
+         else
+          background
+         end
+        end
+       else
+        if_brighter 11 2187 4374
+         if_brighter 12 729 1458
+          if_brighter 13 243 486
+           if_brighter 14 81 162
+            if_brighter 15 27 54
+             corner
+            else
+             background
+            end
+           else
+            background
+           end
+          else
+           background
+          end
+         else
+          background
+         end
+        else
+         background
+        end
+       end
+      else
+       background
+      end
+     else
+      background
+     end
+    else
+     background
+    end
+   else
+    background
+   end
+  elsf_darker 7
+   if_darker 8 531441 1062882
+    if_darker 9 177147 354294
+     if_darker 10 59049 118098
+      if_darker 11 19683 39366
+       if_darker 12 6561 13122
+        if_darker 13 2187 4374
+         if_darker 14 729 1458
+          if_darker 15 243 486
+           corner
+          else
+           if_darker 5 81 162
+            if_darker 6 27 54
+             corner
+            else
+             background
+            end
+           else
+            background
+           end
+          end
+         else
+          if_darker 4 243 486
+           if_darker 5 81 162
+            if_darker 6 27 54
+             corner
+            else
+             background
+            end
+           else
+            background
+           end
+          else
+           background
+          end
+         end
+        else
+         if_darker 3 729 1458
+          if_darker 4 243 486
+           if_darker 5 81 162
+            if_darker 6 27 54
+             corner
+            else
+             background
+            end
+           else
+            background
+           end
+          else
+           background
+          end
+         else
+          background
+         end
+        end
+       else
+        if_darker 2 2187 4374
+         if_darker 3 729 1458
+          if_darker 4 243 486
+           if_darker 5 81 162
+            if_darker 6 27 54
+             corner
+            else
+             background
+            end
+           else
+            background
+           end
+          else
+           background
+          end
+         else
+          background
+         end
+        else
+         background
+        end
+       end
+      else
+       background
+      end
+     else
+      background
+     end
+    else
+     background
+    end
+   else
+    background
+   end
+  else
+   background
+  end
+ elsf_darker 1
+  if_brighter 2 1594323 1594323 1594323
+   if_brighter 8 531441 531441 531441
+    if_brighter 6 177147 354294
+     if_brighter 7 59049 118098
+      if_brighter 9 19683 39366
+       if_brighter 10 6561 13122
+        if_brighter 11 2187 4374
+         if_brighter 5 729 1458
+          if_brighter 4 243 486
+           if_brighter 3 81 162
+            corner
+           else
+            if_brighter 12 27 54
+             if_brighter 13 9 18
+              corner
+             else
+              background
+             end
+            else
+             background
+            end
+           end
+          else
+           if_brighter 12 81 162
+            if_brighter 13 27 54
+             if_brighter 14 9 18
+              corner
+             else
+              background
+             end
+            else
+             background
+            end
+           else
+            background
+           end
+          end
+         else
+          if_brighter 12 243 486
+           if_brighter 13 81 162
+            if_brighter 14 27 54
+             if_brighter 15 9 18
+              corner
+             else
+              background
+             end
+            else
+             background
+            end
+           else
+            background
+           end
+          else
+           background
+          end
+         end
+        else
+         background
+        end
+       else
+        background
+       end
+      else
+       background
+      end
+     else
+      background
+     end
+    else
+     background
+    end
+   elsf_darker 8
+    if_darker 9 177147 354294
+     if_darker 10 59049 118098
+      if_darker 11 19683 39366
+       if_darker 12 6561 13122
+        if_darker 13 2187 4374
+         if_darker 14 729 1458
+          if_darker 15 243 486
+           corner
+          else
+           if_darker 5 81 162
+            if_darker 6 27 54
+             if_darker 7 9 18
+              corner
+             else
+              background
+             end
+            else
+             background
+            end
+           else
+            background
+           end
+          end
+         else
+          if_darker 4 243 486
+           if_darker 5 81 162
+            if_darker 6 27 54
+             if_darker 7 9 18
+              corner
+             else
+              background
+             end
+            else
+             background
+            end
+           else
+            background
+           end
+          else
+           background
+          end
+         end
+        else
+         if_darker 3 729 1458
+          if_darker 4 243 486
+           if_darker 5 81 162
+            if_darker 6 27 54
+             if_darker 7 9 18
+              corner
+             else
+              background
+             end
+            else
+             background
+            end
+           else
+            background
+           end
+          else
+           background
+          end
+         else
+          background
+         end
+        end
+       else
+        background
+       end
+      else
+       background
+      end
+     else
+      background
+     end
+    else
+     background
+    end
+   else
+    background
+   end
+  elsf_darker 2
+   if_brighter 3 531441 531441 531441
+    if_brighter 9 177147 177147 177147
+     if_brighter 6 59049 118098
+      if_brighter 7 19683 39366
+       if_brighter 8 6561 13122
+        if_brighter 10 2187 4374
+         if_brighter 11 729 1458
+          if_brighter 12 243 486
+           if_brighter 5 81 162
+            if_brighter 4 27 54
+             corner
+            else
+             if_brighter 13 9 18
+              if_brighter 14 3 6
+               corner
+              else
+               background
+              end
+             else
+              background
+             end
+            end
+           else
+            if_brighter 13 27 54
+             if_brighter 14 9 18
+              if_brighter 15 3 6
+               corner
+              else
+               background
+              end
+             else
+              background
+             end
+            else
+             background
+            end
+           end
+          else
+           background
+          end
+         else
+          background
+         end
+        else
+         background
+        end
+       else
+        background
+       end
+      else
+       background
+      end
+     else
+      background
+     end
+    elsf_darker 9
+     if_darker 10 59049 118098
+      if_darker 11 19683 39366
+       if_darker 12 6561 13122
+        if_darker 13 2187 4374
+         if_darker 14 729 1458
+          if_darker 15 243 486
+           corner
+          else
+           if_darker 5 81 162
+            if_darker 6 27 54
+             if_darker 7 9 18
+              if_darker 8 3 6
+               corner
+              else
+               background
+              end
+             else
+              background
+             end
+            else
+             background
+            end
+           else
+            background
+           end
+          end
+         else
+          if_darker 4 243 486
+           if_darker 5 81 162
+            if_darker 6 27 54
+             if_darker 7 9 18
+              if_darker 8 3 6
+               corner
+              else
+               background
+              end
+             else
+              background
+             end
+            else
+             background
+            end
+           else
+            background
+           end
+          else
+           background
+          end
+         end
+        else
+         background
+        end
+       else
+        background
+       end
+      else
+       background
+      end
+     else
+      background
+     end
+    else
+     background
+    end
+   elsf_darker 3
+    if_brighter 4 177147 177147 177147
+     if_brighter 14 59049 59049 59049
+      if_brighter 6 19683 39366
+       if_brighter 7 6561 13122
+        if_brighter 8 2187 4374
+         if_brighter 9 729 1458
+          if_brighter 10 243 486
+           if_brighter 11 81 162
+            if_brighter 12 27 54
+             if_brighter 13 9 18
+              if_brighter 5 3 6
+               corner
+              else
+               if_brighter 15 1 2
+                corner
+               else
+                background
+               end
+              end
+             else
+              background
+             end
+            else
+             background
+            end
+           else
+            background
+           end
+          else
+           background
+          end
+         else
+          background
+         end
+        else
+         background
+        end
+       else
+        background
+       end
+      else
+       background
+      end
+     elsf_darker 14
+      if_brighter 10 19683 19683 19683
+       if_brighter 5 6561 13122
+        if_brighter 6 2187 4374
+         if_brighter 7 729 1458
+          if_brighter 8 243 486
+           if_brighter 9 81 162
+            if_brighter 11 27 54
+             if_brighter 12 9 18
+              if_brighter 13 3 6
+               corner
+              else
+               background
+              end
+             else
+              background
+             end
+            else
+             background
+            end
+           else
+            background
+           end
+          else
+           background
+          end
+         else
+          background
+         end
+        else
+         background
+        end
+       else
+        background
+       end
+      elsf_darker 10
+       if_darker 11 6561 13122
+        if_darker 12 2187 4374
+         if_darker 13 729 1458
+          if_darker 15 243 486
+           corner
+          else
+           if_darker 5 81 162
+            if_darker 6 27 54
+             if_darker 7 9 18
+              if_darker 8 3 6
+               if_darker 9 1 2
+                corner
+               else
+                background
+               end
+              else
+               background
+              end
+             else
+              background
+             end
+            else
+             background
+            end
+           else
+            background
+           end
+          end
+         else
+          background
+         end
+        else
+         background
+        end
+       else
+        background
+       end
+      else
+       background
+      end
+     else
+      if_brighter 5 19683 39366
+       if_brighter 6 6561 13122
+        if_brighter 7 2187 4374
+         if_brighter 8 729 1458
+          if_brighter 9 243 486
+           if_brighter 10 81 162
+            if_brighter 11 27 54
+             if_brighter 12 9 18
+              if_brighter 13 3 6
+               corner
+              else
+               background
+              end
+             else
+              background
+             end
+            else
+             background
+            end
+           else
+            background
+           end
+          else
+           background
+          end
+         else
+          background
+         end
+        else
+         background
+        end
+       else
+        background
+       end
+      else
+       background
+      end
+     end
+    elsf_darker 4
+     if_brighter 5 59049 59049 59049
+      if_darker 15 19683 39366
+       if_brighter 11 6561 6561 6561
+        if_brighter 6 2187 4374
+         if_brighter 7 729 1458
+          if_brighter 8 243 486
+           if_brighter 9 81 162
+            if_brighter 10 27 54
+             if_brighter 12 9 18
+              if_brighter 13 3 6
+               if_brighter 14 1 2
+                corner
+               else
+                background
+               end
+              else
+               background
+              end
+             else
+              background
+             end
+            else
+             background
+            end
+           else
+            background
+           end
+          else
+           background
+          end
+         else
+          background
+         end
+        else
+         background
+        end
+       elsf_darker 11
+        if_darker 12 2187 4374
+         if_darker 13 729 1458
+          if_darker 14 243 486
+           corner
+          else
+           background
+          end
+         else
+          background
+         end
+        else
+         background
+        end
+       else
+        background
+       end
+      else
+       if_brighter 6 6561 13122
+        if_brighter 7 2187 4374
+         if_brighter 8 729 1458
+          if_brighter 9 243 486
+           if_brighter 10 81 162
+            if_brighter 11 27 54
+             if_brighter 12 9 18
+              if_brighter 13 3 6
+               if_brighter 14 1 2
+                corner
+               else
+                background
+               end
+              else
+               background
+              end
+             else
+              background
+             end
+            else
+             background
+            end
+           else
+            background
+           end
+          else
+           background
+          end
+         else
+          background
+         end
+        else
+         background
+        end
+       else
+        background
+       end
+      end
+     elsf_darker 5
+      if_brighter 6 19683 19683 19683
+       if_brighter 12 6561 6561 6561
+        if_brighter 7 2187 4374
+         if_brighter 8 729 1458
+          if_brighter 9 243 486
+           if_brighter 10 81 162
+            if_brighter 11 27 54
+             if_brighter 13 9 18
+              if_brighter 14 3 6
+               if_brighter 15 1 2
+                corner
+               else
+                background
+               end
+              else
+               background
+              end
+             else
+              background
+             end
+            else
+             background
+            end
+           else
+            background
+           end
+          else
+           background
+          end
+         else
+          background
+         end
+        else
+         background
+        end
+       elsf_darker 12
+        if_darker 13 2187 4374
+         if_darker 14 729 1458
+          if_darker 15 243 486
+           corner
+          else
+           background
+          end
+         else
+          background
+         end
+        else
+         background
+        end
+       else
+        background
+       end
+      elsf_darker 6
+       if_darker 7 6561 13122
+        if_darker 8 2187 4374
+         if_darker 9 729 1458
+          corner
+         else
+          if_darker 15 243 486
+           corner
+          else
+           background
+          end
+         end
+        else
+         if_darker 14 729 1458
+          if_darker 15 243 486
+           corner
+          else
+           background
+          end
+         else
+          background
+         end
+        end
+       else
+        if_darker 13 2187 4374
+         if_darker 14 729 1458
+          if_darker 15 243 486
+           corner
+          else
+           background
+          end
+         else
+          background
+         end
+        else
+         background
+        end
+       end
+      else
+       if_darker 12 6561 13122
+        if_darker 13 2187 4374
+         if_darker 14 729 1458
+          if_darker 15 243 486
+           corner
+          else
+           background
+          end
+         else
+          background
+         end
+        else
+         background
+        end
+       else
+        background
+       end
+      end
+     else
+      if_brighter 11 19683 19683 19683
+       if_brighter 6 6561 13122
+        if_brighter 7 2187 4374
+         if_brighter 8 729 1458
+          if_brighter 9 243 486
+           if_brighter 10 81 162
+            if_brighter 12 27 54
+             if_brighter 13 9 18
+              if_brighter 14 3 6
+               if_brighter 15 1 2
+                corner
+               else
+                background
+               end
+              else
+               background
+              end
+             else
+              background
+             end
+            else
+             background
+            end
+           else
+            background
+           end
+          else
+           background
+          end
+         else
+          background
+         end
+        else
+         background
+        end
+       else
+        background
+       end
+      elsf_darker 11
+       if_darker 12 6561 13122
+        if_darker 13 2187 4374
+         if_darker 14 729 1458
+          if_darker 15 243 486
+           corner
+          else
+           background
+          end
+         else
+          background
+         end
+        else
+         background
+        end
+       else
+        background
+       end
+      else
+       background
+      end
+     end
+    else
+     if_brighter 10 59049 59049 59049
+      if_brighter 6 19683 39366
+       if_brighter 7 6561 13122
+        if_brighter 8 2187 4374
+         if_brighter 9 729 1458
+          if_brighter 11 243 486
+           if_brighter 12 81 162
+            if_brighter 13 27 54
+             if_brighter 14 9 18
+              if_brighter 5 3 6
+               corner
+              else
+               if_brighter 15 1 2
+                corner
+               else
+                background
+               end
+              end
+             else
+              background
+             end
+            else
+             background
+            end
+           else
+            background
+           end
+          else
+           background
+          end
+         else
+          background
+         end
+        else
+         background
+        end
+       else
+        background
+       end
+      else
+       background
+      end
+     elsf_darker 10
+      if_darker 11 19683 39366
+       if_darker 12 6561 13122
+        if_darker 13 2187 4374
+         if_darker 14 729 1458
+          if_darker 15 243 486
+           corner
+          else
+           if_darker 5 81 162
+            if_darker 6 27 54
+             if_darker 7 9 18
+              if_darker 8 3 6
+               if_darker 9 1 2
+                corner
+               else
+                background
+               end
+              else
+               background
+              end
+             else
+              background
+             end
+            else
+             background
+            end
+           else
+            background
+           end
+          end
+         else
+          background
+         end
+        else
+         background
+        end
+       else
+        background
+       end
+      else
+       background
+      end
+     else
+      background
+     end
+    end
+   else
+    if_brighter 9 177147 177147 177147
+     if_brighter 6 59049 118098
+      if_brighter 7 19683 39366
+       if_brighter 8 6561 13122
+        if_brighter 10 2187 4374
+         if_brighter 11 729 1458
+          if_brighter 12 243 486
+           if_brighter 13 81 162
+            if_brighter 5 27 54
+             if_brighter 4 9 18
+              corner
+             else
+              if_brighter 14 3 6
+               corner
+              else
+               background
+              end
+             end
+            else
+             if_brighter 14 9 18
+              if_brighter 15 3 6
+               corner
+              else
+               background
+              end
+             else
+              background
+             end
+            end
+           else
+            background
+           end
+          else
+           background
+          end
+         else
+          background
+         end
+        else
+         background
+        end
+       else
+        background
+       end
+      else
+       background
+      end
+     else
+      background
+     end
+    elsf_darker 9
+     if_darker 10 59049 118098
+      if_darker 11 19683 39366
+       if_darker 12 6561 13122
+        if_darker 13 2187 4374
+         if_darker 14 729 1458
+          if_darker 15 243 486
+           corner
+          else
+           if_darker 5 81 162
+            if_darker 6 27 54
+             if_darker 7 9 18
+              if_darker 8 3 6
+               corner
+              else
+               background
+              end
+             else
+              background
+             end
+            else
+             background
+            end
+           else
+            background
+           end
+          end
+         else
+          if_darker 4 243 486
+           if_darker 5 81 162
+            if_darker 6 27 54
+             if_darker 7 9 18
+              if_darker 8 3 6
+               corner
+              else
+               background
+              end
+             else
+              background
+             end
+            else
+             background
+            end
+           else
+            background
+           end
+          else
+           background
+          end
+         end
+        else
+         background
+        end
+       else
+        background
+       end
+      else
+       background
+      end
+     else
+      background
+     end
+    else
+     background
+    end
+   end
+  else
+   if_brighter 8 531441 531441 531441
+    if_brighter 6 177147 354294
+     if_brighter 7 59049 118098
+      if_brighter 9 19683 39366
+       if_brighter 10 6561 13122
+        if_brighter 11 2187 4374
+         if_brighter 12 729 1458
+          if_brighter 5 243 486
+           if_brighter 4 81 162
+            if_brighter 3 27 54
+             corner
+            else
+             if_brighter 13 9 18
+              corner
+             else
+              background
+             end
+            end
+           else
+            if_brighter 13 27 54
+             if_brighter 14 9 18
+              corner
+             else
+              background
+             end
+            else
+             background
+            end
+           end
+          else
+           if_brighter 13 81 162
+            if_brighter 14 27 54
+             if_brighter 15 9 18
+              corner
+             else
+              background
+             end
+            else
+             background
+            end
+           else
+            background
+           end
+          end
+         else
+          background
+         end
+        else
+         background
+        end
+       else
+        background
+       end
+      else
+       background
+      end
+     else
+      background
+     end
+    else
+     background
+    end
+   elsf_darker 8
+    if_darker 9 177147 354294
+     if_darker 10 59049 118098
+      if_darker 11 19683 39366
+       if_darker 12 6561 13122
+        if_darker 13 2187 4374
+         if_darker 14 729 1458
+          if_darker 15 243 486
+           corner
+          else
+           if_darker 5 81 162
+            if_darker 6 27 54
+             if_darker 7 9 18
+              corner
+             else
+              background
+             end
+            else
+             background
+            end
+           else
+            background
+           end
+          end
+         else
+          if_darker 4 243 486
+           if_darker 5 81 162
+            if_darker 6 27 54
+             if_darker 7 9 18
+              corner
+             else
+              background
+             end
+            else
+             background
+            end
+           else
+            background
+           end
+          else
+           background
+          end
+         end
+        else
+         if_darker 3 729 1458
+          if_darker 4 243 486
+           if_darker 5 81 162
+            if_darker 6 27 54
+             if_darker 7 9 18
+              corner
+             else
+              background
+             end
+            else
+             background
+            end
+           else
+            background
+           end
+          else
+           background
+          end
+         else
+          background
+         end
+        end
+       else
+        background
+       end
+      else
+       background
+      end
+     else
+      background
+     end
+    else
+     background
+    end
+   else
+    background
+   end
+  end
+ else
+  if_brighter 7 1594323 1594323 1594323
+   if_brighter 6 531441 1062882
+    if_brighter 8 177147 354294
+     if_brighter 9 59049 118098
+      if_brighter 10 19683 39366
+       if_brighter 11 6561 13122
+        if_brighter 5 2187 4374
+         if_brighter 4 729 1458
+          if_brighter 3 243 486
+           if_brighter 2 81 162
+            corner
+           else
+            if_brighter 12 27 54
+             corner
+            else
+             background
+            end
+           end
+          else
+           if_brighter 12 81 162
+            if_brighter 13 27 54
+             corner
+            else
+             background
+            end
+           else
+            background
+           end
+          end
+         else
+          if_brighter 12 243 486
+           if_brighter 13 81 162
+            if_brighter 14 27 54
+             corner
+            else
+             background
+            end
+           else
+            background
+           end
+          else
+           background
+          end
+         end
+        else
+         if_brighter 12 729 1458
+          if_brighter 13 243 486
+           if_brighter 14 81 162
+            if_brighter 15 27 54
+             corner
+            else
+             background
+            end
+           else
+            background
+           end
+          else
+           background
+          end
+         else
+          background
+         end
+        end
+       else
+        background
+       end
+      else
+       background
+      end
+     else
+      background
+     end
+    else
+     background
+    end
+   else
+    background
+   end
+  elsf_darker 7
+   if_darker 8 531441 1062882
+    if_darker 9 177147 354294
+     if_darker 10 59049 118098
+      if_darker 11 19683 39366
+       if_darker 12 6561 13122
+        if_darker 13 2187 4374
+         if_darker 14 729 1458
+          if_darker 15 243 486
+           corner
+          else
+           if_darker 5 81 162
+            if_darker 6 27 54
+             corner
+            else
+             background
+            end
+           else
+            background
+           end
+          end
+         else
+          if_darker 4 243 486
+           if_darker 5 81 162
+            if_darker 6 27 54
+             corner
+            else
+             background
+            end
+           else
+            background
+           end
+          else
+           background
+          end
+         end
+        else
+         if_darker 3 729 1458
+          if_darker 4 243 486
+           if_darker 5 81 162
+            if_darker 6 27 54
+             corner
+            else
+             background
+            end
+           else
+            background
+           end
+          else
+           background
+          end
+         else
+          background
+         end
+        end
+       else
+        if_darker 2 2187 4374
+         if_darker 3 729 1458
+          if_darker 4 243 486
+           if_darker 5 81 162
+            if_darker 6 27 54
+             corner
+            else
+             background
+            end
+           else
+            background
+           end
+          else
+           background
+          end
+         else
+          background
+         end
+        else
+         background
+        end
+       end
+      else
+       background
+      end
+     else
+      background
+     end
+    else
+     background
+    end
+   else
+    background
+   end
+  else
+   background
+  end
+ end
+else
+ if_brighter 6 4782969 4782969 4782969
+  if_brighter 7 1594323 3188646
+   if_brighter 8 531441 1062882
+    if_brighter 9 177147 354294
+     if_brighter 10 59049 118098
+      if_brighter 5 19683 39366
+       if_brighter 4 6561 13122
+        if_brighter 3 2187 4374
+         if_brighter 2 729 1458
+          if_brighter 1 243 486
+           corner
+          else
+           if_brighter 11 81 162
+            corner
+           else
+            background
+           end
+          end
+         else
+          if_brighter 11 243 486
+           if_brighter 12 81 162
+            corner
+           else
+            background
+           end
+          else
+           background
+          end
+         end
+        else
+         if_brighter 11 729 1458
+          if_brighter 12 243 486
+           if_brighter 13 81 162
+            corner
+           else
+            background
+           end
+          else
+           background
+          end
+         else
+          background
+         end
+        end
+       else
+        if_brighter 11 2187 4374
+         if_brighter 12 729 1458
+          if_brighter 13 243 486
+           if_brighter 14 81 162
+            corner
+           else
+            background
+           end
+          else
+           background
+          end
+         else
+          background
+         end
+        else
+         background
+        end
+       end
+      else
+       if_brighter 11 6561 13122
+        if_brighter 12 2187 4374
+         if_brighter 13 729 1458
+          if_brighter 14 243 486
+           if_brighter 15 81 162
+            corner
+           else
+            background
+           end
+          else
+           background
+          end
+         else
+          background
+         end
+        else
+         background
+        end
+       else
+        background
+       end
+      end
+     else
+      background
+     end
+    else
+     background
+    end
+   else
+    background
+   end
+  else
+   background
+  end
+ elsf_darker 6
+  if_darker 7 1594323 3188646
+   if_darker 8 531441 1062882
+    if_darker 9 177147 354294
+     if_darker 10 59049 118098
+      if_darker 5 19683 39366
+       if_darker 4 6561 13122
+        if_darker 3 2187 4374
+         if_darker 2 729 1458
+          if_darker 1 243 486
+           corner
+          else
+           if_darker 11 81 162
+            corner
+           else
+            background
+           end
+          end
+         else
+          if_darker 11 243 486
+           if_darker 12 81 162
+            corner
+           else
+            background
+           end
+          else
+           background
+          end
+         end
+        else
+         if_darker 11 729 1458
+          if_darker 12 243 486
+           if_darker 13 81 162
+            corner
+           else
+            background
+           end
+          else
+           background
+          end
+         else
+          background
+         end
+        end
+       else
+        if_darker 11 2187 4374
+         if_darker 12 729 1458
+          if_darker 13 243 486
+           if_darker 14 81 162
+            corner
+           else
+            background
+           end
+          else
+           background
+          end
+         else
+          background
+         end
+        else
+         background
+        end
+       end
+      else
+       if_darker 11 6561 13122
+        if_darker 12 2187 4374
+         if_darker 13 729 1458
+          if_darker 14 243 486
+           if_darker 15 81 162
+            corner
+           else
+            background
+           end
+          else
+           background
+          end
+         else
+          background
+         end
+        else
+         background
+        end
+       else
+        background
+       end
+      end
+     else
+      background
+     end
+    else
+     background
+    end
+   else
+    background
+   end
+  else
+   background
+  end
+ else
+  background
+ end
+end
