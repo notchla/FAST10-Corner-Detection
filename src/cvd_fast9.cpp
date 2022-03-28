@@ -22,7 +22,7 @@ int main(int argc, char** argv) {
         string name = d.path().filename();
         string path = d.path() / "frames";
 
-        fs::path out_path = fs::path(out_dir) / name / "fast_corner_detect_9";
+        fs::path out_path = fs::path(out_dir) / name / "fast_corner_detect_9_nonmax";
         fs::create_directories(out_path);
 
         for(auto& f: fs::directory_iterator(path)) {
@@ -36,11 +36,11 @@ int main(int argc, char** argv) {
             int threshold = 64;
 
             // Run corner detection
-            CVD::fast_corner_detect_9(img, corners, threshold);
+            CVD::fast_corner_detect_9_nonmax(img, corners, threshold);
 
             // Print results
             cout << f.path() << img.size() << ": " << endl;
-            cout << "fast_corner_detect_9:       " << corners.size() << " corners out of " << img.size().x * img.size().y << endl;  
+            cout << "fast_corner_detect_9_nonmax:       " << corners.size() << " corners out of " << img.size().x * img.size().y << endl;  
             cout << endl;
 
             // Sort corners
