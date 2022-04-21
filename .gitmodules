@@ -1,3 +1,0 @@
-[submodule "libcvd"]
-	path = libcvd
-	url = https://github.com/edrosten/libcvd.git
