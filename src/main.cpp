@@ -11,6 +11,7 @@
 #ifdef WIN32
 #include <intrin.h>
 #else
+#include <x86intrin.h>
 #endif
 
 using namespace std;
@@ -304,7 +305,7 @@ int main(int argc, char** argv) {
 
             }
 
-            uint64_t pixels = ((uint64_t)img.size().x - 3) * ((uint64_t)img.size().y - 3);
+            uint64_t pixels = ((uint64_t)img.size().x - 3) * ((uint64_t)img.size().y - 3) * 256;
             double cvd_sse2_perf = (double)cvd_sse2_cycles / pixels;
             double cvd_plain_perf = (double)cvd_plain_cycles / pixels;
 
