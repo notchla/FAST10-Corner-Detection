@@ -14,6 +14,12 @@
 #include <x86intrin.h>
 #endif
 
+#define COUNT_CHECKS true
+
+#if COUNT_CHECKS
+uint64_t check[10];
+#endif
+
 using namespace std;
 namespace fs = std::filesystem;
 using CVD::ImageRef;
@@ -45,6 +51,10 @@ void our_faster_corner_detect_9(const CVD::BasicImage<CVD::byte>& I, std::vector
 
 		for(int x = 16; x < xend; x += 16)
 		{
+#if COUNT_CHECKS
+            check[0]++;
+#endif
+
 			const CVD::byte* p = &I[y][x];
 			__m128i lo, hi;
 			{
@@ -60,9 +70,13 @@ void our_faster_corner_detect_9(const CVD::BasicImage<CVD::byte>& I, std::vector
 				CHECK_BARRIER(lo, hi, top, ans_0);
 				CHECK_BARRIER(lo, hi, bottom, ans_8);
 				possible = ans_0 | ans_8;
-				if(!possible)
+				if (!possible) {
 					continue;
+				}
 			}
+#if COUNT_CHECKS
+            check[1]++;
+#endif
 
 			unsigned int ans_15, ans_1;
 			{
@@ -71,9 +85,13 @@ void our_faster_corner_detect_9(const CVD::BasicImage<CVD::byte>& I, std::vector
 				CHECK_BARRIER(lo, hi, a, ans_15);
 				CHECK_BARRIER(lo, hi, c, ans_1);
 				possible &= ans_8 | (ans_15 & ans_1);
-				if(!possible)
+				if (!possible) {
 					continue;
+				}
 			}
+#if COUNT_CHECKS
+            check[2]++;
+#endif
 
 			unsigned int ans_9, ans_7;
 			{
@@ -83,9 +101,13 @@ void our_faster_corner_detect_9(const CVD::BasicImage<CVD::byte>& I, std::vector
 				CHECK_BARRIER(lo, hi, f, ans_7);
 				possible &= ans_9 | (ans_0 & ans_1);
 				possible &= ans_7 | (ans_15 & ans_0);
-				if(!possible)
+				if (!possible) {
 					continue;
+				}
 			}
+#if COUNT_CHECKS
+            check[3]++;
+#endif
 
 			unsigned int ans_12, ans_4;
 			{
@@ -95,9 +117,13 @@ void our_faster_corner_detect_9(const CVD::BasicImage<CVD::byte>& I, std::vector
 				CHECK_BARRIER(lo, hi, right, ans_4);
 				possible &= ans_12 | (ans_4 & (ans_1 | ans_7));
 				possible &= ans_4 | (ans_12 & (ans_9 | ans_15));
-				if(!possible)
+				if (!possible) {
 					continue;
+				}
 			}
+#if COUNT_CHECKS
+            check[4]++;
+#endif
 
 			unsigned int ans_14, ans_6;
 			{
@@ -115,10 +141,13 @@ void our_faster_corner_detect_9(const CVD::BasicImage<CVD::byte>& I, std::vector
 					possible &= ans_6 | (ans_14_15 & (ans_12 | (ans_0 & ans_1)));
 					possible &= ans_9 | (ans_14_15) | ans_4;
 				}
-				if(!possible)
+				if (!possible) {
 					continue;
+				}
 			}
-
+#if COUNT_CHECKS
+            check[5]++;
+#endif
 			unsigned int ans_10, ans_2;
 			{
 				__m128i ll = _mm_loadu_si128((const __m128i*)(p - 2 + 2 * row_stride));
@@ -137,9 +166,13 @@ void our_faster_corner_detect_9(const CVD::BasicImage<CVD::byte>& I, std::vector
 				}
 				possible &= ans_8 | ans_14 | ans_2;
 				possible &= ans_0 | ans_10 | ans_6;
-				if(!possible)
+				if (!possible) {
 					continue;
+				}
 			}
+#if COUNT_CHECKS
+            check[6]++;
+#endif
 
 			unsigned int ans_13, ans_5;
 			{
@@ -166,9 +199,13 @@ void our_faster_corner_detect_9(const CVD::BasicImage<CVD::byte>& I, std::vector
 
 				possible &= ans_8 | (ans_13 & ans_14) | ans_2;
 				possible &= ans_0 | (ans_5 & ans_6) | ans_10;
-				if(!possible)
+				if (!possible) {
 					continue;
+				}
 			}
+#if COUNT_CHECKS
+            check[7]++;
+#endif
 
 			unsigned int ans_11, ans_3;
 			{
@@ -198,9 +235,13 @@ void our_faster_corner_detect_9(const CVD::BasicImage<CVD::byte>& I, std::vector
 					possible &= ans_5 | (ans_15 & ans_0) | (ans_10_11);
 					possible &= ans_0 | (ans_10_11) | (ans_5 & ans_6);
 				}
-				if(!possible)
+				if (!possible) {
 					continue;
+				}
 			}
+#if COUNT_CHECKS
+            check[8]++;
+#endif
 
 			possible |= (possible >> 16);
 
@@ -242,6 +283,10 @@ void our_faster_corner_detect_9(const CVD::BasicImage<CVD::byte>& I, std::vector
 				if(possible & (1 << 15))
 					corners.push_back(ImageRef(x + 15, y));
 			}
+
+#if COUNT_CHECKS
+            check[9]++;
+#endif
 		}
 
 		for(int x = xend; x < I.size().x - 3; x++)
@@ -251,67 +296,90 @@ void our_faster_corner_detect_9(const CVD::BasicImage<CVD::byte>& I, std::vector
 }
 
 int main(int argc, char** argv) {
-    string data_dir = "../data/";
-    string out_dir  = "../output/";
+	string data_dir = "../data/";
+	string out_dir = "../output/";
 
-    string dir = fs::current_path().string();
-    
-    for(auto& d: fs::directory_iterator(data_dir)) {
+	string dir = fs::current_path().string();
+	fs::create_directory(out_dir);
+
+    for (auto& d : fs::directory_iterator(data_dir)) {
         string name = d.path().filename().string();
         string path = (d.path() / "frames").string();
 
         cout << path << endl;
 
-        for(auto& f: fs::directory_iterator(path)) {
+#if COUNT_CHECKS
+        FILE* outf = std::fopen((fs::path(out_dir) / (name + ".dat")).generic_u8string().c_str(), "wb");
+#endif
 
-            // Load img from file
-            CVD::Image<CVD::byte> img;
-            CVD::img_load(img, f.path().string());
+        // For each threshold a vector of check with 8 exit counts
+        for (int threshold = 0; threshold < 130; threshold += 10)
+        {
+			int image_count = 0;
+			for (auto& f : fs::directory_iterator(path)) {
 
-            uint64_t cvd_sse2_cycles = 0;
-            uint64_t cvd_plain_cycles = 0;
-            uint64_t begin = 0;
+				// Load img from file
+				CVD::Image<CVD::byte> img;
+				CVD::img_load(img, f.path().string());
+				uint64_t pixels = ((uint64_t)img.size().x - 3) * ((uint64_t)img.size().y - 3);
 
-            for (int threshold = 0; threshold < 256; threshold++) 
-            {
-                // Run SSE2 corner detection
-                vector<CVD::ImageRef> ref;
+				uint64_t cvd_sse2_cycles = 0;
+				uint64_t cvd_plain_cycles = 0;
+				uint64_t begin = 0;
 
-                begin = __rdtsc();
-                CVD::fast_corner_detect_9(img, ref, threshold);
-                cvd_sse2_cycles += __rdtsc() - begin;
-                sort(ref.begin(), ref.end());
+				// Run SSE2 corner detection
+				vector<CVD::ImageRef> ref;
 
-                // CVD scalar corner detection
+				begin = __rdtsc();
+				CVD::fast_corner_detect_9(img, ref, threshold);
+				cvd_sse2_cycles += __rdtsc() - begin;
+				sort(ref.begin(), ref.end());
+
+				// CVD scalar corner detection
 #if 0
-                vector<CVD::ImageRef> plain;
-                begin = __rdtsc();
-                CVD::fast_corner_detect_plain_9(img, plain, threshold);
-                cvd_plain_cycles += __rdtsc() - begin;
+				vector<CVD::ImageRef> plain;
+				begin = __rdtsc();
+				CVD::fast_corner_detect_plain_9(img, plain, threshold);
+				cvd_plain_cycles += __rdtsc() - begin;
 #endif
 
 				// CVD ours corner
-                vector<CVD::ImageRef> plain;
-                begin = __rdtsc();
-                our_faster_corner_detect_9(img, plain, threshold);
-                cvd_plain_cycles += __rdtsc() - begin;
-                sort(plain.begin(), plain.end());
+				vector<CVD::ImageRef> plain;
+				begin = __rdtsc();
+				our_faster_corner_detect_9(img, plain, threshold);
+				cvd_plain_cycles += __rdtsc() - begin;
+				sort(plain.begin(), plain.end());
 
-                // Sort corners
-                if (!(ref == plain)) {
-                    cout << "Error" << endl;
-                    return 1;
-                }
+				// Sort corners
+				if (!(ref == plain)) {
+					cout << "Error" << endl;
+					return 1;
+				}
 
+				//printf("\t\t%3d: %10d / %10d (%5.2f%%)\n", threshold, ref.size(), pixels, (double)ref.size() / pixels * 100);
+
+				double cvd_sse2_perf = (double)cvd_sse2_cycles / (pixels * threshold);
+				double cvd_plain_perf = (double)cvd_plain_cycles / (pixels * threshold);
+
+				// printf("\t%s - sse2 %8.2f | plain %8.2f (cycles / pixel)\n", f.path().generic_u8string().c_str(), cvd_sse2_perf, cvd_plain_perf);
+
+				image_count++;
+			}
+
+#if COUNT_CHECKS
+            fprintf(outf, "%3d ", threshold);
+            for (int i = 0; i < sizeof(check) / sizeof(check[0]); i++) {
+                fprintf(outf, "%8.4f", ((double)check[i] / image_count) / ((double)check[0] / image_count));
             }
-
-            uint64_t pixels = ((uint64_t)img.size().x - 3) * ((uint64_t)img.size().y - 3) * 256;
-            double cvd_sse2_perf = (double)cvd_sse2_cycles / pixels;
-            double cvd_plain_perf = (double)cvd_plain_cycles / pixels;
-
-            printf("\t%s - sse2 %8.2f | plain %8.2f (cycles / pixel)\n", f.path().generic_u8string().c_str(), cvd_sse2_perf, cvd_plain_perf);
-        }
-    }
-
+			for (int i = 0; i < sizeof(check) / sizeof(check[0]); i++) {
+				check[i] = 0;
+			}
+			fprintf(outf, "\n");
+#endif
+		}
+#if COUNT_CHECKS
+        fclose(outf);
+#endif
+	}
     return 0;
 }
