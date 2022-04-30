@@ -38,9 +38,9 @@ uint64_t rdtsc() {
 	{												\
 	 CVD::byte diff = lo - other < 0 ? 0 : lo - other;					\
 	 CVD::byte diff2 = other - hi < 0 ? 0 : other - hi;					\
-	 diff = diff == 0 ? 0x1 : 0; 					\
-	 diff2 = diff2 == 0 ? 0x1 : 0;					\
-	 flags = ~(diff | diff2 << 1);       \
+	 diff = diff != 0 ? 0x1 : 0; 					\
+	 diff2 = diff2 != 0 ? 0x1 : 0;					\
+	 flags = diff | (diff2 << 1);       \
 	}
 
 void unrolled_faster(const CVD::BasicImage<CVD::byte>& I, std::vector<ImageRef>& corners, const int barrier){
