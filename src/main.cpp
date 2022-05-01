@@ -470,6 +470,9 @@ void our_faster_corner_detect_9(const CVD::BasicImage<CVD::byte>& I, std::vector
 int main(int argc, char** argv) {
 	string data_dir = "../data/";
 	string out_dir = "../output/";
+	if (argc > 1) {
+		data_dir = argv[1];
+	}
 
 	string dir = fs::current_path().string();
 	fs::create_directory(out_dir);
