@@ -12,9 +12,9 @@ void fast9_sse2(const CVD::BasicImage<CVD::byte>& I, std::vector<ImageRef>& corn
 
     for (int y = 3; y < I.size().y - 3; y++)
     {
-        for (int x = 3; x < 16; x++)
-            if (CVD::is_corner_9<CVD::Less>(&I[y][x], I.row_stride(), barrier) || CVD::is_corner_9<CVD::Greater>(&I[y][x], I.row_stride(), barrier))
-                corners.push_back(ImageRef(x, y));
+        //for (int x = 3; x < 16; x++)
+        //    if (CVD::is_corner_9<CVD::Less>(&I[y][x], I.row_stride(), barrier) || CVD::is_corner_9<CVD::Greater>(&I[y][x], I.row_stride(), barrier))
+        //        corners.push_back(ImageRef(x, y));
 
         for (int x = 16; x < xend; x += 16)
         {
@@ -252,8 +252,8 @@ void fast9_sse2(const CVD::BasicImage<CVD::byte>& I, std::vector<ImageRef>& corn
             }
         }
 
-        for (int x = xend; x < I.size().x - 3; x++)
-            if (CVD::is_corner_9<CVD::Less>(&I[y][x], I.row_stride(), barrier) || CVD::is_corner_9<CVD::Greater>(&I[y][x], I.row_stride(), barrier))
-                corners.push_back(ImageRef(x, y));
+        //for (int x = xend; x < I.size().x - 3; x++)
+        //    if (CVD::is_corner_9<CVD::Less>(&I[y][x], I.row_stride(), barrier) || CVD::is_corner_9<CVD::Greater>(&I[y][x], I.row_stride(), barrier))
+        //        corners.push_back(ImageRef(x, y));
     }
 }

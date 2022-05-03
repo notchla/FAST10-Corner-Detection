@@ -15,7 +15,7 @@
 #include <x86intrin.h>
 #endif
 
-#define COUNT_CHECKS true
+#define COUNT_CHECKS false
 extern uint64_t check[9];
 
 using CVD::ImageRef;
@@ -33,3 +33,4 @@ typedef void fast_func(const CVD::BasicImage<CVD::byte>& I, std::vector<ImageRef
 
 void fast9_sse2(const CVD::BasicImage<CVD::byte>& I, std::vector<ImageRef>& corners, const int barrier);
 void fast9_scalar(const CVD::BasicImage<CVD::byte>& I, std::vector<ImageRef>& corners, const int barrier);
+void fast9_if(const CVD::BasicImage<CVD::byte>& I, std::vector<ImageRef>& corners, const int barrier);

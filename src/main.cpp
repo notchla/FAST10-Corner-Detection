@@ -120,12 +120,14 @@ void performance_plot(const fs::path& out_path, const fs::path& image_path, cons
         ImageRef img_size(width, height);
         CVD::Image<CVD::byte> img = full.sub_image(img_start, img_size);
 
-        // Number of repetitions for performance measurements
-        uint64_t expected_cycles = size * 10;
-        uint64_t count = std::max(3ull, (uint64_t)std::ceil(1e9 / (double)expected_cycles));
-
+        
         for (auto& [name, func] : functions)
         {
+            // Number of repetitions for performance measurements
+            uint64_t expected_cycles = (double)size * 10 * (name == "sse2" ?  1.0 / 16.0 : 1.0);
+            uint64_t count = std::max(3ull, (uint64_t)std::ceil(5e8 / (double)expected_cycles));
+            count = count * 3 + 1;
+            
             stringstream out_name;
             out_name << name << "_" << width << "x" << height;
 
@@ -144,18 +146,25 @@ void performance_plot(const fs::path& out_path, const fs::path& image_path, cons
 
             for (int threshold = 0; threshold < 100; threshold += 10) {
                 uint64_t total_cycles = 0;
+
+                vector<uint64_t> measurements;
                 for (int j = 0; j < count; j++)
                 {
                     vector<ImageRef> corners;
 
                     uint64_t begin_cycles = rdtsc();
                     func(img, corners, threshold);
-                    total_cycles += rdtsc() - begin_cycles;
+                    uint64_t cycles = rdtsc() - begin_cycles;
+
+                    measurements.push_back(cycles);
                 }
 
-                double cycles = (double)total_cycles / (double)count;
+                std::sort(measurements.begin(), measurements.end());
+                
 
-                fprintf(outf, "%3d %16.3f\n", threshold, cycles);
+                uint64_t cycles = (double)measurements[measurements.size() / 2];
+
+                fprintf(outf, "%3d %16llu\n", threshold, cycles);
             }
 
             fclose(outf);
@@ -177,7 +186,8 @@ int main(int argc, char** argv) {
 
     auto dataset = find_datasets(data_dir);
     vector<pair<string, fast_func*>> functions = {
-        //{ "scalar", fast9_scalar },
+        { "scalar", fast9_scalar },
+        { "if", fast9_if },
         { "sse2", fast9_sse2 },
     };
 
