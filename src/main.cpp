@@ -34,7 +34,7 @@ vector<DataSet> find_datasets(const fs::path& data_path)
     return result;
 }
 
-void run_tests(const vector<DataSet>& dataset, const vector<pair<string, fast_func*>>& functions) 
+void run_tests(const vector<DataSet>& dataset, fast_func* reference,  vector<pair<string, fast_func*>>& functions) 
 {
     for (auto& [name, paths] : dataset) 
     {
@@ -53,7 +53,7 @@ void run_tests(const vector<DataSet>& dataset, const vector<pair<string, fast_fu
             {
                 // Run reference corner detection
                 vector<CVD::ImageRef> ref;
-                CVD::fast_corner_detect_9(img, ref, threshold);
+                reference(img, ref, threshold);
                 sort(ref.begin(), ref.end());
 
                 for (auto& [name, func] : functions) 
@@ -125,7 +125,7 @@ void performance_plot(const fs::path& out_path, const fs::path& image_path, cons
         {
             // Number of repetitions for performance measurements
             uint64_t expected_cycles = (double)size * 10 * (name == "sse2" ?  1.0 / 16.0 : 1.0);
-            uint64_t count = std::max(3ull, (uint64_t)std::ceil(5e8 / (double)expected_cycles));
+            uint64_t count = std::max((uint64_t)3ull, (uint64_t)std::ceil(5e8 / (double)expected_cycles));
             count = count * 3 + 1;
             
             stringstream out_name;
@@ -186,13 +186,14 @@ int main(int argc, char** argv) {
 
     auto dataset = find_datasets(data_dir);
     vector<pair<string, fast_func*>> functions = {
-        { "scalar", fast9_scalar },
-        { "if", fast9_if },
-        { "sse2", fast9_sse2 },
+        // { "scalar", fast9_scalar },
+        // { "if", fast9_if },
+        // { "sse2", fast9_sse2 },
+        {"scalar10", fast10_scalar},
     };
 
-    //run_tests(dataset, functions);
-    performance_plot(out_dir, "../data/box0_big.png", functions);
+    run_tests(dataset, CVD::fast_corner_detect_10, functions);
+    // performance_plot(out_dir, "../data/box0_big.png", functions);
 
     return 0;
 }

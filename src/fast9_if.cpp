@@ -1,14 +1,5 @@
 #include "fast.h"
 
-#define CHECK_BARRIER_SCALAR(lo, hi, other, flags)			\
-{													    	\
-     CVD::byte diff = lo - other < 0 ? 0 : lo - other;		\
-     CVD::byte diff2 = other - hi < 0 ? 0 : other - hi;		\
-     diff = diff != 0 ? 0x1 : 0; 					        \
-     diff2 = diff2 != 0 ? 0x1 : 0;					        \
-     flags = diff | (diff2 << 1);                           \
-}
-
 void fast9_if(const CVD::BasicImage<CVD::byte>& I, std::vector<ImageRef>& corners, const int barrier) {
     const int row_stride = I.row_stride();
     const int stride = 3 * row_stride;

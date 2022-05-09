@@ -1,3 +1,5 @@
+#pragma once
+
 #include <cvd/image_io.h>
 #include <cvd/fast_corner.h>
 #include <cvd_src/faster_corner_utilities.h>
@@ -18,6 +20,11 @@
 #define COUNT_CHECKS false
 extern uint64_t check[9];
 
+#define CHECK_BARRIER_SCALAR(lo, hi, other, flags)			\
+{													    	\
+    flags = lo > other | ((other > hi) << 1);               \
+}
+
 using CVD::ImageRef;
 
 inline uint64_t rdtsc() {
@@ -34,3 +41,5 @@ typedef void fast_func(const CVD::BasicImage<CVD::byte>& I, std::vector<ImageRef
 void fast9_sse2(const CVD::BasicImage<CVD::byte>& I, std::vector<ImageRef>& corners, const int barrier);
 void fast9_scalar(const CVD::BasicImage<CVD::byte>& I, std::vector<ImageRef>& corners, const int barrier);
 void fast9_if(const CVD::BasicImage<CVD::byte>& I, std::vector<ImageRef>& corners, const int barrier);
+
+void fast10_scalar(const CVD::BasicImage<CVD::byte>& I, std::vector<ImageRef>& corners, const int barrier);
