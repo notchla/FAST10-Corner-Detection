@@ -43,3 +43,4 @@ void fast9_scalar(const CVD::BasicImage<CVD::byte>& I, std::vector<ImageRef>& co
 void fast9_if(const CVD::BasicImage<CVD::byte>& I, std::vector<ImageRef>& corners, const int barrier);
 
 void fast10_scalar(const CVD::BasicImage<CVD::byte>& I, std::vector<ImageRef>& corners, const int barrier);
+void fastX_slow(const CVD::BasicImage<CVD::byte>& I, std::vector<ImageRef>& corners, const int barrier);

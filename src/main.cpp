@@ -190,6 +190,7 @@ int main(int argc, char** argv) {
         // { "if", fast9_if },
         // { "sse2", fast9_sse2 },
         {"scalar10", fast10_scalar},
+        {"slow10", fastX_slow}
     };
 
     run_tests(dataset, CVD::fast_corner_detect_10, functions);
