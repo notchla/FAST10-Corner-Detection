@@ -39,8 +39,13 @@ uint8_t* copy_image_to_worst_case_alignment(const CVD::Image<CVD::byte>& I, uint
     uint64_t width = I.size().x;
     uint64_t height = I.size().y;
     uint64_t stride = width * ((width + alignment - 1) / width);
+
+#ifdef MSVC
     uint8_t* data = (uint8_t*)_aligned_offset_malloc(stride * height, alignment * 2, alignment);
     assert(((uintptr_t)data & (alignment - 1)) == 0 && ((uintptr_t)data & (alignment * 2 - 1)) != 0);
+#else
+    uint8_t* data = (uint8_t*)aligned_alloc(alignment, stride * height);
+#endif
 
     for (int y = 0; y < height; y++) {
         for (int x = 0; x < width; x++) {
@@ -52,7 +57,11 @@ uint8_t* copy_image_to_worst_case_alignment(const CVD::Image<CVD::byte>& I, uint
 }
 
 void aligned_free(void* data) {
+#ifdef MSVC
     _aligned_free(data);
+#else
+    aligned_free(data);
+#endif
 }
 
 void run_tests(const vector<DataSet>& dataset, cvd_fast_func* reference,  vector<pair<string, fast_func*>>& functions) 

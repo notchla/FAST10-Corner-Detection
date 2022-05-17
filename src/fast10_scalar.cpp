@@ -1,7 +1,5 @@
 #include "fast.h"
 
-#include "iacaMarks.h"
-
 void fast10_scalar(uint8_t* data, uint32_t width, uint32_t height, uint32_t row_stride, std::vector<ImageRef>& corners, const int barrier)
 {
 	const int stride = 3 * row_stride;
@@ -33,8 +31,8 @@ void fast10_scalar(uint8_t* data, uint32_t width, uint32_t height, uint32_t row_
 				uint8_t top = *(p - stride);
 				uint8_t bottom = *(p + stride);
 
-				ans_b = lo > top | ((top > hi) << 1); 
-				ans_e = lo > bottom | ((bottom > hi) << 1); 
+				ans_b = (lo > top) | ((top > hi) << 1); 
+				ans_e = (lo > bottom) | ((bottom > hi) << 1); 
 
 				if(!(ans_b | ans_e))
 					continue;
@@ -48,8 +46,8 @@ void fast10_scalar(uint8_t* data, uint32_t width, uint32_t height, uint32_t row_
 				uint8_t ul = *(p - 2 - 2 * row_stride);
 				uint8_t lr = *(p + 2 + 2 * row_stride);
 
-				ans_m = lo > ul | ((ul > hi) << 1); 
-				ans_p = lo > lr | ((lr > hi) << 1); 
+				ans_m = (lo > ul) | ((ul > hi) << 1); 
+				ans_p = (lo > lr) | ((lr > hi) << 1); 
 
 				possible = (ans_m & ans_b) | (ans_e & ans_p);
 				if(!possible)
@@ -64,8 +62,8 @@ void fast10_scalar(uint8_t* data, uint32_t width, uint32_t height, uint32_t row_
 				uint8_t ll = *(p - 2 + 2 * row_stride);
 				uint8_t ur = *(p + 2 - 2 * row_stride);
 
-				ans_o = lo > ll | ((ll > hi) << 1); 
-				ans_n = lo > ur | ((ur > hi) << 1); 
+				ans_o = (lo > ll) | ((ll > hi) << 1); 
+				ans_n = (lo > ur) | ((ur > hi) << 1); 
 
 				possible &= ans_o | (ans_b & ans_n);
 				possible &= ans_n | (ans_e & ans_o);
@@ -81,8 +79,8 @@ void fast10_scalar(uint8_t* data, uint32_t width, uint32_t height, uint32_t row_
 				uint8_t left = *(p - 3);
 				uint8_t right = *(p + 3);
 				
-				ans_h = lo > left  | ((left  > hi) << 1); 
-				ans_k = lo > right | ((right > hi) << 1); 
+				ans_h = (lo > left) | ((left  > hi) << 1); 
+				ans_k = (lo > right) | ((right > hi) << 1); 
 
 				possible &= ans_h | (ans_n & ans_k & ans_p);
 				possible &= ans_k | (ans_m & ans_h & ans_o);
@@ -98,8 +96,8 @@ void fast10_scalar(uint8_t* data, uint32_t width, uint32_t height, uint32_t row_
 				uint8_t a = *(p - 1 - stride);
 				uint8_t c = *(p + 1 - stride);
 
-				ans_a = lo > a | ((a > hi) << 1); 
-				ans_c = lo > c | ((c > hi) << 1); 
+				ans_a = (lo > a) | ((a > hi) << 1); 
+				ans_c = (lo > c) | ((c > hi) << 1); 
 
 				possible &= ans_a | (ans_e & ans_p);
 				possible &= ans_c | (ans_o & ans_e);
@@ -115,8 +113,8 @@ void fast10_scalar(uint8_t* data, uint32_t width, uint32_t height, uint32_t row_
 				uint8_t d = *(p - 1 + stride);
 				uint8_t f = *(p + 1 + stride);
 				
-				ans_d = lo > d | ((d > hi) << 1); 
-				ans_f = lo > f | ((f > hi) << 1); 
+				ans_d = (lo > d) | ((d > hi) << 1); 
+				ans_f = (lo > f) | ((f > hi) << 1); 
 
 				const unsigned int ans_abc = ans_a & ans_b & ans_c;
 				possible &= ans_d | (ans_abc & ans_n);
@@ -133,8 +131,8 @@ void fast10_scalar(uint8_t* data, uint32_t width, uint32_t height, uint32_t row_
 				uint8_t g = *(p - 3 - row_stride);
 				uint8_t ii = *(p - 3 + row_stride);
 
-				ans_g = lo > g  | ((g > hi) << 1); 
-				ans_i = lo > ii | ((ii > hi) << 1); 
+				ans_g = (lo > g) | ((g > hi) << 1); 
+				ans_i = (lo > ii) | ((ii > hi) << 1); 
 
 				possible &= ans_g | (ans_f & ans_p & ans_k);
 				possible &= ans_i | (ans_c & ans_n & ans_k);
@@ -150,8 +148,8 @@ void fast10_scalar(uint8_t* data, uint32_t width, uint32_t height, uint32_t row_
 				uint8_t jj = *(p + 3 - row_stride);
 				uint8_t l = *(p + 3 + row_stride);
 				
-				ans_j = lo > jj | ((jj > hi) << 1); 
-				ans_l = lo > l  | ((l  > hi) << 1); 
+				ans_j = (lo > jj) | ((jj > hi) << 1); 
+				ans_l = (lo > l) | ((l  > hi) << 1); 
 
 				const unsigned int ans_ghi = ans_g & ans_h & ans_i;
 				possible &= ans_j | (ans_d & ans_o & ans_ghi);

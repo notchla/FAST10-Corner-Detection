@@ -26,7 +26,7 @@ extern uint64_t check[9];
 
 #define CHECK_BARRIER_SCALAR(lo, hi, other, flags)			\
 {													    	\
-    flags = lo > other | ((other > hi) << 1);               \
+    flags = (lo > other) | ((other > hi) << 1);               \
 }
 
 using CVD::ImageRef;
