@@ -19,10 +19,19 @@
 #include <x86intrin.h>
 #endif
 
+#ifndef COUNT_CHECKS
 #define COUNT_CHECKS false
-extern uint64_t check[9];
+#endif
 
+#if COUNT_CHECKS
+extern uint64_t check[9];
+#endif
+
+
+#ifndef PEELING_ENABLED
 #define PEELING_ENABLED true
+#endif
+
 
 #define CHECK_BARRIER_SCALAR(lo, hi, other, flags)			\
 {													    	\
