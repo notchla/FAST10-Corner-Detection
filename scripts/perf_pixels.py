@@ -4,6 +4,7 @@ import seaborn as sns
 import matplotlib.pyplot as plt
 from matplotlib.ticker import FixedLocator, NullLocator
 import numpy as np
+import os
 
 # Basic Plotting Utilities
 def plot_init_settings():
@@ -11,17 +12,16 @@ def plot_init_settings():
     plt.rcParams['font.size'] = 12
     plt.rcParams['axes.linewidth'] = 2
 
-
-
-def line_plot(x, ys, name, xlabel, ylabel, title, x_log=False):
+def line_plot(xs, ys, names, xlabel, ylabel, title, x_log=False):
     sns.set_theme()
     plt.title(title)
-    for (y, name) in zip(ys, name):
+    for (x, y, name) in zip(xs, ys, names):
         plt.plot(x, y, marker='^', linestyle='dashed', label=name)
     plt.xlabel(xlabel)
     plt.ylabel(ylabel)
     plt.legend()
     plt.tight_layout()
+
     if x_log:
         plt.xscale('log')
         ax = plt.gca()
@@ -37,29 +37,33 @@ def line_plot(x, ys, name, xlabel, ylabel, title, x_log=False):
 #plot_init_settings()
 
 data_dir = "../output/"
-names = [ "scalar", "sse2" ]
-thresh = 30
+names = [ "scalar_10", "sse2_10", "avx2_10"]
+names = names[1:]
+compilers = [ "_msvc", "_clang" ]
+compilers = [ "_a16", "_a32", "_a64" ]
+threshold = 25
+#names = names[1:]
 
-data = []
-sizes = list(range(128, 8192 + 1, 128))
-    
-for n in names:
-    cycles = []
-    count = []
-    for i in sizes:
-        prefix = f"{data_dir}{n}_{i}x{i}_"
-        cur_cycles = { int(l.split()[0]): float(l.split()[1]) for l in open(prefix + "cycles.dat").readlines() }
-        cur_count = { int(l.split()[0]): [int(v) for v in l.split()[1:]] for l in open(prefix + "count.dat").readlines() }
-        cycles.append(cur_cycles[thresh])
-        count.append(cur_count[thresh][0])
+xs = []
+ys = []
+ns = []
 
-    arr_size = np.array(sizes)
-    if n == "sse2":
-        total_pixels = (arr_size - 32) * (arr_size - 6)
-    else:
-        total_pixels = np.square(arr_size - 6)
+for comp in compilers:
+    for n in names:
+        prefix = os.path.join(data_dir, f"{n}_{threshold}_")
+        cycles = [ int(l) for l in open(prefix + f"cycles{comp}.dat").readlines() ]
+        sizes = []
+        counts = []
+        for l in open(prefix + "count.dat").readlines():
+            nums = [int(x) for x in l.split()]
+            counts.append(nums[2:])
+            sizes.append((nums[0] - 6) * (nums[1] - 6))
+        
+        xs.append(sizes)
+        #ys.append([ cy / s for cy, s in zip(cycles, sizes)])
+        ys.append([ s[0] * (16 if "sse2" in n else 32) / cy for cy, s in zip(cycles, counts)])
+        #ys.append([ s / cy for cy, s in zip(cycles, sizes)])
+        ns.append(f"{n} {comp}")
 
-    data.append(total_pixels / np.array(cycles))
-
-line_plot([i for i in range(128, 8192 + 1, 128)], data, names, "n", "pixels per cycle", f"Fast 9, t={thresh}  n x n image (msvc 19.31 -O2 -Ob2)")
+line_plot(xs, ys, ns, "n", "pixels per cycle", f"Fast 10, t={threshold}  n x n image (msvc 19.31 -O2 -Ob2 -arch:AVX2)")
 

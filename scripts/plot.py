@@ -2,10 +2,10 @@ import matplotlib.pyplot as plt
 import numpy as np
 import os
 
-os.chdir("../output")
+os.chdir("../output/old_counts")
 
-fig, axs = plt.subplots(len(os.listdir(".")))
-fig.set_size_inches(18, 10)
+fig, ax = plt.subplots(1)#len(os.listdir(".")))
+fig.set_size_inches(12, 8)
 
 for index, path in enumerate(os.listdir(".")):
     name = path[:-4]
@@ -23,16 +23,18 @@ for index, path in enumerate(os.listdir(".")):
     count = data.shape[0]
     width = 1 / (count + 2)     # the width of the bars
 
-    ax = axs[index]
+    #ax = axs[index]
     for i in range(count):
         offset = (i - count / 2) * width
         rects = ax.bar(x + offset, data[i,:], width, label=f"checks = {i}")
 
     ax.set_xlabel('threshold')
-    ax.set_ylabel('proportion')
-    ax.set_title(name)
+    ax.set_ylabel('fraction')
+    ax.set_title('Fraction of iterations per check with different thresholds')
     ax.set_xticks(x, labels=labels)
     ax.grid(axis="y")
+    break
 
 #fig.tight_layout()
+plt.legend()
 plt.show()

@@ -34,7 +34,28 @@ vector<DataSet> find_datasets(const fs::path& data_path)
     return result;
 }
 
-void run_tests(const vector<DataSet>& dataset, fast_func* reference,  vector<pair<string, fast_func*>>& functions) 
+
+uint8_t* copy_image_to_worst_case_alignment(const CVD::Image<CVD::byte>& I, uint32_t alignment) {
+    uint64_t width = I.size().x;
+    uint64_t height = I.size().y;
+    uint64_t stride = width * ((width + alignment - 1) / width);
+    uint8_t* data = (uint8_t*)_aligned_offset_malloc(stride * height, alignment * 2, alignment);
+    assert(((uintptr_t)data & (alignment - 1)) == 0 && ((uintptr_t)data & (alignment * 2 - 1)) != 0);
+
+    for (int y = 0; y < height; y++) {
+        for (int x = 0; x < width; x++) {
+            *(data + y * stride + x) = I[y][x];
+        }
+    }
+
+    return data;
+}
+
+void aligned_free(void* data) {
+    _aligned_free(data);
+}
+
+void run_tests(const vector<DataSet>& dataset, cvd_fast_func* reference,  vector<pair<string, fast_func*>>& functions) 
 {
     for (auto& [name, paths] : dataset) 
     {
@@ -60,7 +81,7 @@ void run_tests(const vector<DataSet>& dataset, fast_func* reference,  vector<pai
                 {
                     // Run corner detection
                     vector<CVD::ImageRef> corners;
-                    func(img, corners, threshold);
+                    func(img.data(), img.size().x, img.size().y, img.row_stride(), corners, threshold);
                     sort(corners.begin(), corners.end());
 
                     if (!(ref == corners)) 
@@ -79,29 +100,24 @@ void run_tests(const vector<DataSet>& dataset, fast_func* reference,  vector<pai
 }
 
 // Count checks on a given image and output data to 'out_path'
-void count_checks(const fs::path& out_path, fast_func* function, CVD::Image<CVD::byte>& img)
+void count_checks(FILE* outf, fast_func* function, CVD::Image<CVD::byte>& img, int threshold)
 {
-    
-
-    FILE* outf = std::fopen(out_path.generic_u8string().c_str(), "wb");
-
-    for (int threshold = 0; threshold < 100; threshold += 10) {
+    //for (int threshold = 0; threshold < 50; threshold += 5) 
+    {
         // Zero out counters
         for (int i = 0; i < sizeof(check) / sizeof(check[0]); i++) {
             check[i] = 0;
         }
 
         vector<ImageRef> corners;
-        function(img, corners, threshold);
+        function(img.data(), img.size().x, img.size().y, img.row_stride(), corners, threshold);
 
-        fprintf(outf, "%3d ", threshold);
+        std::fprintf(outf, "%4d %4d ", img.size().x, img.size().y);
         for (int i = 0; i < sizeof(check) / sizeof(check[0]); i++) {
-            fprintf(outf, "%9llu ", check[i]);
+            std::fprintf(outf, "%9llu ", check[i]);
         }
-        fprintf(outf, "\n");
+        std::fprintf(outf, "\n");
     }
-
-    fclose(outf);
 }
 
 void performance_plot(const fs::path& out_path, const fs::path& image_path, const vector<pair<string, fast_func*>>& functions) {
@@ -110,66 +126,76 @@ void performance_plot(const fs::path& out_path, const fs::path& image_path, cons
     assert(full.size().x >= 8192 && full.size().y >= 8192);
 
 
-    for (int i = 128; i <= 8192; i += 128) 
+    int threshold = 25;
+    int xoffset = 256;
+    int yoffset = 256;
+
+    for (auto& [name, func] : functions)
     {
-        uint64_t width = i;
-        uint64_t height = i;
-        uint64_t size = width * height;
+        stringstream out_name;
+        out_name << name << "_" << threshold;
 
-        ImageRef img_start(0, 0);
-        ImageRef img_size(width, height);
-        CVD::Image<CVD::byte> img = full.sub_image(img_start, img_size);
+#if COUNT_CHECKS
+        out_name << "_count.dat";
+#else
+        out_name << "_cycles.dat";
+#endif
 
-        
-        for (auto& [name, func] : functions)
+        FILE* outf = std::fopen((out_path / out_name.str()).generic_u8string().c_str(), "wb");
+
+        for (int i = 128; i <= 1024; i += 32)
         {
-            // Number of repetitions for performance measurements
-            uint64_t expected_cycles = (double)size * 10 * (name == "sse2" ?  1.0 / 16.0 : 1.0);
-            uint64_t count = std::max((uint64_t)3ull, (uint64_t)std::ceil(5e8 / (double)expected_cycles));
-            count = count * 3 + 1;
+            uint64_t width = i;
+            uint64_t height = i;
+            uint64_t size = width * height;
+
+            ImageRef img_start(xoffset, yoffset);
+            ImageRef img_size(width, height);
+            CVD::Image<CVD::byte> img = full.sub_image(img_start, img_size);
             
-            stringstream out_name;
-            out_name << name << "_" << width << "x" << height;
+            uint8_t* data = copy_image_to_worst_case_alignment(img, 64);
+            uint32_t row_stride = img.row_stride();
 
 #if COUNT_CHECKS
             // If COUNT_CHECKS is defined, only output the number of checks
-            out_name << "_count.dat";
-            count_checks(out_path / out_name.str(), func, img);
-            cout << out_name.str() << endl;
+            count_checks(outf, func, img, threshold);
 #else
-            // Otherwise measure and output performance
-            out_name << "_cycles.dat";
+            // Number of repetitions for performance measurements
+            uint64_t expected_cycles = (double)size * 10;
+            uint64_t count = std::max((uint64_t)3ull, (uint64_t)std::ceil(1e9 / (double)expected_cycles));
+            if (name == "sse2_10")
+                count *= 2;
+            if (name == "avx2_10")
+                count *= 3;
 
+            // Otherwise measure and output performance
             cout << name << " [" << width << "x" << height << "] | count:" << count << endl;
 
-            FILE* outf = std::fopen((out_path / out_name.str()).generic_u8string().c_str(), "wb");
+            uint64_t total_cycles = 0;
 
-            for (int threshold = 0; threshold < 100; threshold += 10) {
-                uint64_t total_cycles = 0;
+            vector<uint64_t> measurements;
+            for (int j = 0; j < count; j++)
+            {
+                vector<ImageRef> corners;
 
-                vector<uint64_t> measurements;
-                for (int j = 0; j < count; j++)
-                {
-                    vector<ImageRef> corners;
+                uint64_t begin_cycles = rdtsc();
+                func(data, width, height, row_stride, corners, threshold);
+                uint64_t cycles = rdtsc() - begin_cycles;
 
-                    uint64_t begin_cycles = rdtsc();
-                    func(img, corners, threshold);
-                    uint64_t cycles = rdtsc() - begin_cycles;
-
-                    measurements.push_back(cycles);
-                }
-
-                std::sort(measurements.begin(), measurements.end());
-                
-
-                uint64_t cycles = (double)measurements[measurements.size() / 2];
-
-                fprintf(outf, "%3d %16llu\n", threshold, cycles);
+                measurements.push_back(cycles);
             }
 
-            fclose(outf);
+            std::sort(measurements.begin(), measurements.end());
+
+            uint64_t cycles = (double)measurements[measurements.size() / 2];
+
+            fprintf(outf, "%16llu\n", cycles);
+
+            aligned_free(data);
 #endif
         }
+
+        std::fclose(outf);
     }
 }
 
@@ -189,12 +215,14 @@ int main(int argc, char** argv) {
         // { "scalar", fast9_scalar },
         // { "if", fast9_if },
         // { "sse2", fast9_sse2 },
-        {"scalar10", fast10_scalar},
-        {"slow10", fastX_slow}
+        // {"scalar_10", fast10_scalar},
+        {"sse2_10", fast10_sse2},
+        {"avx2_10", fast10_avx2},
+        // {"slow10", fastX_slow}
     };
 
     run_tests(dataset, CVD::fast_corner_detect_10, functions);
-    // performance_plot(out_dir, "../data/box0_big.png", functions);
+    //performance_plot(out_dir, "../data/box0_big.png", functions);
 
     return 0;
 }

@@ -1,21 +1,27 @@
 #include "fast.h"
 
-void fast10_scalar(const CVD::BasicImage<uint8_t>& I, std::vector<ImageRef>& corners, const int barrier)
+#include "iacaMarks.h"
+
+void fast10_scalar(uint8_t* data, uint32_t width, uint32_t height, uint32_t row_stride, std::vector<ImageRef>& corners, const int barrier)
 {
-	const int row_stride = I.row_stride();
 	const int stride = 3 * row_stride;
 
 	uint8_t c_barrier = (uint8_t)barrier;
 
-	int xend = I.size().x - 3;
-	int yend = I.size().y -3;
+	int xend = width  - 3;
+	int yend = height - 3;
 
 	for(int y = 3; y < yend; y++)
 	{
 
 		for(int x = 3; x < xend; x += 1)
 		{
-			const uint8_t* p = &I[y][x];
+//			IACA_START
+
+#if COUNT_CHECKS
+            check[0]++;
+#endif
+			const uint8_t* p = data + y * row_stride + x;
 			uint8_t lo, hi;
 			{
 				lo = *p - c_barrier < 0 ? 0 : *p - c_barrier;
@@ -34,6 +40,9 @@ void fast10_scalar(const CVD::BasicImage<uint8_t>& I, std::vector<ImageRef>& cor
 					continue;
 			}
 
+#if COUNT_CHECKS
+            check[1]++;
+#endif
 			unsigned int ans_m, ans_p, possible;
 			{
 				uint8_t ul = *(p - 2 - 2 * row_stride);
@@ -46,6 +55,9 @@ void fast10_scalar(const CVD::BasicImage<uint8_t>& I, std::vector<ImageRef>& cor
 				if(!possible)
 					continue;
 			}
+#if COUNT_CHECKS
+            check[2]++;
+#endif
 
 			unsigned int ans_o, ans_n;
 			{
@@ -61,6 +73,9 @@ void fast10_scalar(const CVD::BasicImage<uint8_t>& I, std::vector<ImageRef>& cor
 					continue;
 			}
 
+#if COUNT_CHECKS
+            check[3]++;
+#endif
 			unsigned int ans_h, ans_k;
 			{
 				uint8_t left = *(p - 3);
@@ -75,6 +90,9 @@ void fast10_scalar(const CVD::BasicImage<uint8_t>& I, std::vector<ImageRef>& cor
 					continue;
 			}
 
+#if COUNT_CHECKS
+            check[4]++;
+#endif
 			unsigned int ans_a, ans_c;
 			{
 				uint8_t a = *(p - 1 - stride);
@@ -89,6 +107,9 @@ void fast10_scalar(const CVD::BasicImage<uint8_t>& I, std::vector<ImageRef>& cor
 					continue;
 			}
 
+#if COUNT_CHECKS
+            check[5]++;
+#endif
 			unsigned int ans_d, ans_f;
 			{
 				uint8_t d = *(p - 1 + stride);
@@ -104,6 +125,9 @@ void fast10_scalar(const CVD::BasicImage<uint8_t>& I, std::vector<ImageRef>& cor
 					continue;
 			}
 
+#if COUNT_CHECKS
+            check[6]++;
+#endif
 			unsigned int ans_g, ans_i;
 			{
 				uint8_t g = *(p - 3 - row_stride);
@@ -118,6 +142,9 @@ void fast10_scalar(const CVD::BasicImage<uint8_t>& I, std::vector<ImageRef>& cor
 					continue;
 			}
 
+#if COUNT_CHECKS
+            check[7]++;
+#endif
 			unsigned int ans_j, ans_l;
 			{
 				uint8_t jj = *(p + 3 - row_stride);
@@ -133,12 +160,17 @@ void fast10_scalar(const CVD::BasicImage<uint8_t>& I, std::vector<ImageRef>& cor
 					continue;
 			}
 
+#if COUNT_CHECKS
+            check[8]++;
+#endif
 			possible |= (possible >> 1);
 			
 			if(possible)
 				corners.push_back(ImageRef(x , y));
 				
 		}
+
+//		IACA_END
 
 	}
 }

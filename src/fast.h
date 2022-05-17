@@ -13,12 +13,16 @@
 
 #ifdef WIN32
 #include <intrin.h>
+#include <immintrin.h>
+
 #else
 #include <x86intrin.h>
 #endif
 
 #define COUNT_CHECKS false
 extern uint64_t check[9];
+
+#define PEELING_ENABLED true
 
 #define CHECK_BARRIER_SCALAR(lo, hi, other, flags)			\
 {													    	\
@@ -34,13 +38,17 @@ inline uint64_t rdtsc() {
 namespace CVD {
     void fast_corner_detect_plain_9(const BasicImage<byte>& i, std::vector<ImageRef>& corners, int b);
 #include <cvd_src/corner_9.h>
+#include <cvd_src/corner_10.h>
 }
 
-typedef void fast_func(const CVD::BasicImage<CVD::byte>& I, std::vector<ImageRef>& corners, const int barrier);
+typedef void fast_func(uint8_t* data, uint32_t width, uint32_t height, uint32_t row_stride, std::vector<ImageRef>& corners, const int barrier);
+typedef void cvd_fast_func(const CVD::BasicImage<CVD::byte>& i, std::vector<ImageRef>& corners, int b);
 
-void fast9_sse2(const CVD::BasicImage<CVD::byte>& I, std::vector<ImageRef>& corners, const int barrier);
-void fast9_scalar(const CVD::BasicImage<CVD::byte>& I, std::vector<ImageRef>& corners, const int barrier);
-void fast9_if(const CVD::BasicImage<CVD::byte>& I, std::vector<ImageRef>& corners, const int barrier);
+void fast9_sse2   (uint8_t* data, uint32_t width, uint32_t height, uint32_t row_stride, std::vector<ImageRef>& corners, const int barrier);
+void fast9_scalar (uint8_t* data, uint32_t width, uint32_t height, uint32_t row_stride, std::vector<ImageRef>& corners, const int barrier);
+void fast9_if     (uint8_t* data, uint32_t width, uint32_t height, uint32_t row_stride, std::vector<ImageRef>& corners, const int barrier);
 
-void fast10_scalar(const CVD::BasicImage<CVD::byte>& I, std::vector<ImageRef>& corners, const int barrier);
-void fastX_slow(const CVD::BasicImage<CVD::byte>& I, std::vector<ImageRef>& corners, const int barrier);
+void fast10_scalar(uint8_t* data, uint32_t width, uint32_t height, uint32_t row_stride, std::vector<ImageRef>& corners, const int barrier);
+void fast10_sse2  (uint8_t* data, uint32_t width, uint32_t height, uint32_t row_stride, std::vector<ImageRef>& corners, const int barrier);
+void fast10_avx2  (uint8_t* data, uint32_t width, uint32_t height, uint32_t row_stride, std::vector<ImageRef>& corners, const int barrier);
+void fastX_slow   (uint8_t* data, uint32_t width, uint32_t height, uint32_t row_stride, std::vector<ImageRef>& corners, const int barrier);
