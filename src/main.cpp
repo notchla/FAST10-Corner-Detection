@@ -166,9 +166,10 @@ int main(int argc, char** argv) {
         // { "scalar", fast9_scalar },
         // { "if", fast9_if },
         // { "sse2", fast9_sse2 },
-        // {"scalar_10", fast10_scalar},
+             {"scalar_10", fast10_scalar},
         {"sse2_10", fast10_sse2},
         {"avx2_10", fast10_avx2},
+        {"avx512_10", fast10_avx512}
         // {"slow10", fastX_slow}
     };
 

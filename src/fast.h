@@ -20,7 +20,7 @@
 #endif
 
 #ifndef COUNT_CHECKS
-#define COUNT_CHECKS false
+#define COUNT_CHECKS true
 #endif
 
 #if COUNT_CHECKS
@@ -60,4 +60,5 @@ void fast9_if     (uint8_t* data, uint32_t width, uint32_t height, uint32_t row_
 void fast10_scalar(uint8_t* data, uint32_t width, uint32_t height, uint32_t row_stride, std::vector<ImageRef>& corners, const int barrier);
 void fast10_sse2  (uint8_t* data, uint32_t width, uint32_t height, uint32_t row_stride, std::vector<ImageRef>& corners, const int barrier);
 void fast10_avx2  (uint8_t* data, uint32_t width, uint32_t height, uint32_t row_stride, std::vector<ImageRef>& corners, const int barrier);
+void fast10_avx512  (uint8_t* data, uint32_t width, uint32_t height, uint32_t row_stride, std::vector<ImageRef>& corners, const int barrier);
 void fastX_slow   (uint8_t* data, uint32_t width, uint32_t height, uint32_t row_stride, std::vector<ImageRef>& corners, const int barrier);
