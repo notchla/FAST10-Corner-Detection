@@ -24,7 +24,7 @@
 #endif
 
 #if COUNT_CHECKS
-extern uint64_t check[9];
+extern uint64_t check[10];
 #endif
 
 

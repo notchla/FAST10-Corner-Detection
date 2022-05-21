@@ -1,7 +1,7 @@
 #include "fast.h"
 #include "utils.h"
 
-uint64_t check[9];
+uint64_t check[10];
 
 using namespace std;
 namespace fs = std::filesystem;
@@ -78,8 +78,8 @@ void performance_plot(const fs::path& out_path, const fs::path& image_path, cons
 
 
     int threshold = 25;
-    int xoffset = 256;
-    int yoffset = 256;
+    int xoffset = 0;
+    int yoffset = 0;
 
     for (auto& [name, func] : functions)
     {
@@ -94,7 +94,8 @@ void performance_plot(const fs::path& out_path, const fs::path& image_path, cons
 
         FILE* outf = std::fopen((out_path / out_name.str()).generic_u8string().c_str(), "wb");
 
-        for (int i = 128; i <= 1024; i += 32)
+        //for (int i = 128; i <= 1024; i += 32)
+        for (int i = 8192; i <= 8192; i += 32)
         {
             uint64_t width = i;
             uint64_t height = i;
@@ -166,7 +167,7 @@ int main(int argc, char** argv) {
         // { "scalar", fast9_scalar },
         // { "if", fast9_if },
         // { "sse2", fast9_sse2 },
-             {"scalar_10", fast10_scalar},
+        {"scalar_10", fast10_scalar},
         {"sse2_10", fast10_sse2},
         {"avx2_10", fast10_avx2},
         {"avx512_10", fast10_avx512}

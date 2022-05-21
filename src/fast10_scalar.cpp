@@ -163,8 +163,12 @@ void fast10_scalar(uint8_t* data, uint32_t width, uint32_t height, uint32_t row_
 #endif
 			possible |= (possible >> 1);
 			
-			if(possible)
-				corners.push_back(ImageRef(x , y));
+			if (possible) {
+#if COUNT_CHECKS
+                check[9]++;
+#endif
+				corners.push_back(ImageRef(x, y));
+			}
 				
 		}
 

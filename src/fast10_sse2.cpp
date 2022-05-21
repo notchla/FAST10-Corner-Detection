@@ -45,9 +45,6 @@ void fast10_sse2(uint8_t* data, uint32_t width, uint32_t height, uint32_t row_st
                 hi = _mm_adds_epu8(barriers, v);
             }
 
-#if COUNT_CHECKS
-            check[1]++;
-#endif
             unsigned int ans_b, ans_e;
             {
                 // uint8_t top = *(p - stride);
@@ -64,7 +61,7 @@ void fast10_sse2(uint8_t* data, uint32_t width, uint32_t height, uint32_t row_st
             }
 
 #if COUNT_CHECKS
-            check[2]++;
+            check[1]++;
 #endif
             unsigned int ans_m, ans_p, possible;
             {
@@ -84,7 +81,7 @@ void fast10_sse2(uint8_t* data, uint32_t width, uint32_t height, uint32_t row_st
 
 
 #if COUNT_CHECKS
-            check[3]++;
+            check[2]++;
 #endif
             unsigned int ans_o, ans_n;
             {
@@ -104,7 +101,7 @@ void fast10_sse2(uint8_t* data, uint32_t width, uint32_t height, uint32_t row_st
             }
 
 #if COUNT_CHECKS
-            check[4]++;
+            check[3]++;
 #endif
             unsigned int ans_h, ans_k;
             {
@@ -124,7 +121,7 @@ void fast10_sse2(uint8_t* data, uint32_t width, uint32_t height, uint32_t row_st
             }
 
 #if COUNT_CHECKS
-            check[5]++;
+            check[4]++;
 #endif
             unsigned int ans_a, ans_c;
             {
@@ -144,7 +141,7 @@ void fast10_sse2(uint8_t* data, uint32_t width, uint32_t height, uint32_t row_st
             }
 
 #if COUNT_CHECKS
-            check[6]++;
+            check[5]++;
 #endif
 
             unsigned int ans_d, ans_f;
@@ -162,7 +159,7 @@ void fast10_sse2(uint8_t* data, uint32_t width, uint32_t height, uint32_t row_st
             }
 
 #if COUNT_CHECKS
-            check[7]++;
+            check[6]++;
 #endif
             unsigned int ans_g, ans_i;
             {
@@ -211,6 +208,9 @@ void fast10_sse2(uint8_t* data, uint32_t width, uint32_t height, uint32_t row_st
 #if 1
             for (uint64_t i = 0; i < 16; i++) {
                 if (possible & (1ull << i)) {
+#if COUNT_CHECKS
+            check[9]++;
+#endif
                     corners.push_back(ImageRef(x + i, y));
                 }
             }
