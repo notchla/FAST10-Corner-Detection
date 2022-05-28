@@ -2,13 +2,13 @@
 
 #define CONTIG_VALUE 10
 
-void fastX_slow(const CVD::BasicImage<CVD::byte>& I, std::vector<ImageRef>& corners, const int barrier) {
-    const int row_stride = I.row_stride();
+void fastX_slow(uint8_t* data, uint32_t width, uint32_t height, uint32_t row_stride, std::vector<ImageRef>& corners, const int barrier) {
     const int stride = 3 * row_stride;
 
-    int xend = I.size().x - 3;
-    int yend = I.size().y - 3;
-    CVD::byte c_barrier = (CVD::byte)barrier;
+    uint8_t c_barrier = (uint8_t)barrier;
+
+    int xend = width - 3;
+    int yend = height - 3;
 
     int strides[] = { -stride, -stride + 1, -2 * row_stride + 2, -row_stride + 3, 3, row_stride + 3, 2 * row_stride + 2, stride + 1,
                     stride, stride - 1, 2 * row_stride - 2, row_stride - 3, -3, -row_stride - 3, -2 * row_stride - 2, -stride - 1,
@@ -18,9 +18,9 @@ void fastX_slow(const CVD::BasicImage<CVD::byte>& I, std::vector<ImageRef>& corn
     for (int y = 3; y < yend; y++) {
         for (int x = 3; x < xend; x++) {
 
-            const CVD::byte* p = &I[y][x];
-            CVD::byte lo = *p - c_barrier < 0 ? 0 : *p - c_barrier;
-            CVD::byte hi = *p + c_barrier > 255 ? 255 : *p + c_barrier;
+            const uint8_t* p = data + y * row_stride + x;
+            uint8_t lo = *p - c_barrier < 0 ? 0 : *p - c_barrier;
+            uint8_t hi = *p + c_barrier > 255 ? 255 : *p + c_barrier;
 
 #if CONTIG_VALUE >= 12
             int lowers = 0, highers = 0;
