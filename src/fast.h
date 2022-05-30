@@ -27,6 +27,17 @@
 extern uint64_t check[10];
 #endif
 
+#ifndef COUNT_CHECK_POSITION
+#define COUNT_CHECK_POSITION false
+#endif
+
+struct Lane {
+    int x, y, width, checks;
+};
+#if COUNT_CHECK_POSITION
+extern std::vector<Lane> lane_checks;
+#endif
+
 
 #ifndef PEELING_ENABLED
 #define PEELING_ENABLED true
@@ -67,3 +78,8 @@ void fast10_avx2_unrolled_2(uint8_t* data, uint32_t width, uint32_t height, uint
 void fast10_avx2_unrolled_3(uint8_t* data, uint32_t width, uint32_t height, uint32_t row_stride, std::vector<ImageRef>& corners, const int barrier);
 
 void fast10_scalar_block(uint8_t* data, uint32_t width, uint32_t height, uint32_t row_stride, std::vector<ImageRef>& corners, const int barrier);
+
+void fast10_avx2_vecpeeling(uint8_t* data, uint32_t width, uint32_t height, uint32_t row_stride, std::vector<ImageRef>& corners, const int barrier);
+void fast10_avx2_vecpeeling_mask(uint8_t* data, uint32_t width, uint32_t height, uint32_t row_stride, std::vector<ImageRef>& corners, const int barrier);
+
+void fast10_avx2_checkposition(uint8_t* data, uint32_t width, uint32_t height, uint32_t row_stride, std::vector<ImageRef>& corners, const int barrier);

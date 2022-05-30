@@ -2,6 +2,7 @@
 #include "utils.h"
 
 uint64_t check[10];
+std::vector<Lane> lane_checks;
 
 using namespace std;
 namespace fs = std::filesystem;
@@ -71,6 +72,46 @@ void count_checks(FILE* outf, fast_func* function, CVD::Image<CVD::byte>& img, i
     }
 }
 
+// Gets the position and number of checks for each lane on a given image and output data to 'out_path'
+void count_lane_checks(const fs::path& out_path, const fs::path& image_path, const vector<pair<string, fast_func*>>& functions) {
+#if COUNT_CHECK_POSITION
+    CVD::Image<CVD::byte> full;
+    CVD::img_load(full, image_path.string());
+    assert(full.size().x >= 8192 && full.size().y >= 8192);
+    int threshold = 25;
+    int xoffset = 0;
+    int yoffset = 0;
+
+    for (auto& [name, func] : functions)
+    {
+        stringstream out_name;
+        out_name << name << "_" << threshold << "_checkposition.dat";
+        FILE* outf = std::fopen((out_path / out_name.str()).generic_u8string().c_str(), "wb");
+
+        uint64_t width = 512;
+        uint64_t height = 512;
+        uint64_t size = width * height;
+
+        ImageRef img_start(xoffset, yoffset);
+        ImageRef img_size(width, height);
+        CVD::Image<CVD::byte> img = full.sub_image(img_start, img_size);
+
+        lane_checks.clear();
+
+        vector<ImageRef> corners;
+        func(img.data(), img.size().x, img.size().y, img.row_stride(), corners, threshold);
+
+        std::fprintf(outf, "%d %d %llu\n", img.size().x, img.size().y, corners.size());
+        for (auto& corner : corners) {
+            std::fprintf(outf, "%4d %4d\n", corner.y, corner.x);
+        }
+        for (auto& l : lane_checks) {
+            std::fprintf(outf, "%4d %4d %3d %d\n", l.y, l.x, l.width, l.checks);
+        }
+    }
+#endif
+}
+
 void performance_plot(const fs::path& out_path, const fs::path& image_path, const vector<pair<string, fast_func*>>& functions) {
     CVD::Image<CVD::byte> full;
     CVD::img_load(full, image_path.string());
@@ -117,7 +158,7 @@ void performance_plot(const fs::path& out_path, const fs::path& image_path, cons
             uint64_t count = std::max((uint64_t)3ull, (uint64_t)std::ceil(1e9 / (double)expected_cycles));
             if (name == "sse2_10")
                 count *= 2;
-            if (name == "avx2_10")
+            if (name == "avx2_10" || name == "avx2_10_vecpeeling" || name == "avx2_10_vecpeeling_mask" || name == "avx2_10_unrolled_2" || name == "avx2_10_unrolled_3")
                 count *= 3;
 
             // Otherwise measure and output performance
@@ -172,9 +213,16 @@ int main(int argc, char** argv) {
         {"avx2_10", fast10_avx2},
         {"avx512_10", fast10_avx512}
         // {"slow10", fastX_slow}
+        // {"scalar_10_block", fast10_scalar_block},
+        // {"avx2_10_unrolled_3", fast10_avx2_unrolled_3},
+        // {"avx2_10_unrolled_2", fast10_avx2_unrolled_2},
+        // {"avx2_10_vecpeeling", fast10_avx2_vecpeeling},
+        // {"avx2_10_vecpeeling_mask", fast10_avx2_vecpeeling_mask}
+        // {"avx2_10_checkposition", fast10_avx2_checkposition}
     };
 
     run_tests(dataset, CVD::fast_corner_detect_10, functions);
+    //count_lane_checks(out_dir, "../data/box0_big.png", functions);
     //performance_plot(out_dir, "../data/box0_big.png", functions);
 
     return 0;
