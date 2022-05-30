@@ -3,17 +3,18 @@
 #define CONTIG_VALUE 10
 
 void fastX_slow(uint8_t* data, uint32_t width, uint32_t height, uint32_t row_stride, std::vector<ImageRef>& corners, const int barrier) {
-    const int stride = 3 * row_stride;
+    int stride = 3 * row_stride;
 
     uint8_t c_barrier = (uint8_t)barrier;
 
     int xend = width - 3;
     int yend = height - 3;
 
-    int strides[] = { -stride, -stride + 1, -2 * row_stride + 2, -row_stride + 3, 3, row_stride + 3, 2 * row_stride + 2, stride + 1,
-                    stride, stride - 1, 2 * row_stride - 2, row_stride - 3, -3, -row_stride - 3, -2 * row_stride - 2, -stride - 1,
-                    -stride, -stride + 1, -2 * row_stride + 2, -row_stride + 3, 3, row_stride + 3, 2 * row_stride + 2, stride + 1,
-                    stride, stride - 1, 2 * row_stride - 2, row_stride - 3, -3, -row_stride - 3, -2 * row_stride - 2, -stride - 1 };
+    int rstride = row_stride;
+    int strides[] = { -stride, -stride + 1, -2 * rstride + 2, -rstride + 3, 3, rstride + 3, 2 * rstride + 2, stride + 1,
+                    stride, stride - 1, 2 * rstride - 2, rstride - 3, -3, -rstride - 3, -2 * rstride - 2, -stride - 1,
+                    -stride, -stride + 1, -2 * rstride + 2, -rstride + 3, 3, rstride + 3, 2 * rstride + 2, stride + 1,
+                    stride, stride - 1, 2 * rstride - 2, rstride - 3, -3, -rstride - 3, -2 * rstride - 2, -stride - 1 };
 
     for (int y = 3; y < yend; y++) {
         for (int x = 3; x < xend; x++) {

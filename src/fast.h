@@ -78,6 +78,7 @@ void fast10_avx2_unrolled_2(uint8_t* data, uint32_t width, uint32_t height, uint
 void fast10_avx2_unrolled_3(uint8_t* data, uint32_t width, uint32_t height, uint32_t row_stride, std::vector<ImageRef>& corners, const int barrier);
 
 void fast10_scalar_block(uint8_t* data, uint32_t width, uint32_t height, uint32_t row_stride, std::vector<ImageRef>& corners, const int barrier);
+void fast10_avx2_blocking(uint8_t* data, uint32_t width, uint32_t height, uint32_t row_stride, std::vector<ImageRef>& corners, const int barrier);
 
 void fast10_avx2_vecpeeling(uint8_t* data, uint32_t width, uint32_t height, uint32_t row_stride, std::vector<ImageRef>& corners, const int barrier);
 void fast10_avx2_vecpeeling_mask(uint8_t* data, uint32_t width, uint32_t height, uint32_t row_stride, std::vector<ImageRef>& corners, const int barrier);

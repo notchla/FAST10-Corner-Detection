@@ -68,27 +68,28 @@ plt.plot([0, right], [pi_avx2,   pi_avx2  ], label = 'avx2')
 
 plt.plot([0, right], [0, beta * right], label = 'bandwidth')
 
-def compute_roofline_position(name, ops, vector_size):
-    counts = np.array([int(v) for v in open(os.path.join(out_dir, f"{name}_10_25_count_8192.dat")).read().split()[2:-1]],
+def compute_roofline_position(name, ops, vector_size, size):
+    counts = np.array([int(v) for v in open(os.path.join(out_dir, f"{name}_10_25_count_roofline_{size}.dat")).read().split()[2:-1]],
             np.uint64)
-    cycles = int(open(os.path.join(out_dir, f"{name}_10_25_cycles_8192.dat")).read())
+    cycles = int(open(os.path.join(out_dir, f"{name}_10_25_cycles_roofline_{size}.dat")).read())
 
     w = counts.dot(ops) * vector_size
     q = counts[0] * vector_size
 
-    print(name, w, q)
-
     return w / q, w / cycles
 
 colors = [ "blue", "orange", "green" ]
-markers = [ "s", "o", "^" ]
+markers = [
+    [ "x", "x", "x" ],
+    [ "s", "s", "s" ],
+]
 
-for (k, v), c, m in zip(algos.items(), colors, markers):
-    x, y = compute_roofline_position(k, v["ops"], v["vector_size"])
-    print(x, y)
-    plt.plot(x, y, color=c, marker=m, linestyle="none", label=k)
+for i, size in enumerate([128, 8192]):
+    for (k, v), c, m in zip(algos.items(), colors, markers[i]):
+        x, y = compute_roofline_position(k, v["ops"], v["vector_size"], size)
+        plt.plot(x, y, color=c, marker=m, linestyle="none", label=f"{k} {size}x{size}")
 
-plt.legend()
+plt.legend(loc="lower left")
 
 # X axis
 plt.xlabel("Operational Intensity [byte ops/byte]")

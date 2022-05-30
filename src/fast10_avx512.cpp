@@ -1,5 +1,7 @@
 #include "fast.h"
 
+#if AVX512_ENABLED
+
 typedef __int128 int128_t;
 typedef unsigned __int128 uint128_t;
 
@@ -15,9 +17,9 @@ typedef unsigned __int128 uint128_t;
         flags = ~(m1 | (m2 << 64)); \
     }
 
+
 void fast10_avx512(uint8_t* data, uint32_t width, uint32_t height, uint32_t row_stride, std::vector<ImageRef>& corners, const int barrier)
 {
-    #if AVX512_ENABLED
     const uint32_t stride = 3 * row_stride;
 
     uint8_t c_barrier = (uint8_t)barrier;
@@ -57,9 +59,6 @@ void fast10_avx512(uint8_t* data, uint32_t width, uint32_t height, uint32_t row_
                 hi = _mm512_adds_epu8(barriers, v);
             }
 
-#if COUNT_CHECKS
-            check[1]++;
-#endif
             uint128_t ans_b, ans_e;
             {
                 // uint8_t top = *(p - stride);
@@ -76,7 +75,7 @@ void fast10_avx512(uint8_t* data, uint32_t width, uint32_t height, uint32_t row_
             }
 
 #if COUNT_CHECKS
-            check[2]++;
+            check[1]++;
 #endif
             uint128_t ans_m, ans_p, possible;
             {
@@ -96,7 +95,7 @@ void fast10_avx512(uint8_t* data, uint32_t width, uint32_t height, uint32_t row_
 
 
 #if COUNT_CHECKS
-            check[3]++;
+            check[2]++;
 #endif
             uint128_t ans_o, ans_n;
             {
@@ -116,7 +115,7 @@ void fast10_avx512(uint8_t* data, uint32_t width, uint32_t height, uint32_t row_
             }
 
 #if COUNT_CHECKS
-            check[4]++;
+            check[3]++;
 #endif
             uint128_t ans_h, ans_k;
             {
@@ -136,7 +135,7 @@ void fast10_avx512(uint8_t* data, uint32_t width, uint32_t height, uint32_t row_
             }
 
 #if COUNT_CHECKS
-            check[5]++;
+            check[4]++;
 #endif
             uint128_t ans_a, ans_c;
             {
@@ -156,7 +155,7 @@ void fast10_avx512(uint8_t* data, uint32_t width, uint32_t height, uint32_t row_
             }
 
 #if COUNT_CHECKS
-            check[6]++;
+            check[5]++;
 #endif
 
             uint128_t ans_d, ans_f;
@@ -175,7 +174,7 @@ void fast10_avx512(uint8_t* data, uint32_t width, uint32_t height, uint32_t row_
             }
 
 #if COUNT_CHECKS
-            check[7]++;
+            check[6]++;
 #endif
             uint128_t ans_g, ans_i;
             {
@@ -259,8 +258,6 @@ void fast10_avx512(uint8_t* data, uint32_t width, uint32_t height, uint32_t row_
         }
 #endif
     }
-#else
-    printf("avx512 not supported\n");
-    fast10_avx2(data, width, height, row_stride, corners, barrier);
-#endif
 }
+
+#endif
