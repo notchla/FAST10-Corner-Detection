@@ -112,6 +112,132 @@ void count_lane_checks(const fs::path& out_path, const fs::path& image_path, con
 #endif
 }
 
+atomic_uint64_t warm_cache_counter;
+
+void randomized_performance_plot(const fs::path& out_path, const fs::path& image_path, const vector<pair<string, fast_func*>>& functions) {
+    CVD::Image<CVD::byte> full;
+    CVD::img_load(full, image_path.string());
+    assert(full.size().x >= 8192 && full.size().y >= 8192);
+
+
+    int threshold = 25;
+    for (auto& [name, func] : functions)
+    {
+        stringstream out_name;
+        out_name << name << "_" << threshold;
+
+#if COUNT_CHECKS
+        out_name << "_count.dat";
+#else
+        out_name << "_cycles.dat";
+#endif
+
+        FILE* outf = std::fopen((out_path / out_name.str()).generic_u8string().c_str(), "wb");
+
+        for (int i = 128; i <= 8192; i += 128)
+        //for (int i = 8192; i <= 8192; i += 32)
+        {
+            uint64_t width = i;
+            uint64_t height = i;
+            uint64_t size = width * height;
+            uint32_t row_stride;
+
+            ImageRef img_size(width, height);
+
+            // Number of different images to test to avoid training the branch predictor and not fitting the measurements to a single image
+            uint64_t target_size = 32 * 1024 * 1024;
+            uint64_t images_count = max(1ull, (target_size + (width * height - 1)) / (width * height));
+
+            // Number of repetitions for performance measurements
+            uint64_t repetition_count = 5;
+            if (name.find("sse2") != string::npos) {
+                repetition_count = 10;
+            }
+            else if (name.find("avx") != string::npos) {
+                repetition_count = 15;
+            }
+
+            srand(1337);
+            rand();
+
+            printf("%-20s [%4llu x %4llu] x %4llu = %6.2f MB\n", name.c_str(), width, height, images_count, (double)images_count * width * height / (1024.0 * 1024.0));
+            vector<uint8_t*> images;
+            for (int j = 0; j < images_count; j++) {
+                int xoffset = img_size.x < 8192 ? rand() % (8192 - img_size.x) : 0;
+                int yoffset = img_size.y < 8192 ? rand() % (8192 - img_size.y) : 0;
+
+                ImageRef img_start(xoffset, yoffset);
+
+                CVD::Image<CVD::byte> img = full.sub_image(img_start, img_size);
+                uint8_t* data = copy_image_to_worst_case_alignment(img, 64);
+                images.push_back(data);
+
+                row_stride = img.row_stride();
+            }
+
+#if COUNT_CHECKS
+            // If COUNT_CHECKS is defined, only output the number of checks
+
+            // Zero out counters
+            for (int i = 0; i < sizeof(check) / sizeof(check[0]); i++) {
+                check[i] = 0;
+            }
+
+            // Measure all images
+            for (uint8_t* img : images) {
+                vector<ImageRef> corners;
+                func(img, width, height, row_stride, corners, threshold);
+            }
+
+            // Print checks
+            std::fprintf(outf, "%4d %4d ", (int)width, (int)height);
+            for (int i = 0; i < sizeof(check) / sizeof(check[0]); i++) {
+                std::fprintf(outf, "%9llu ", check[i]);
+            }
+            std::fprintf(outf, "\n");
+#else
+
+            // Otherwise measure and output performance
+
+            vector<uint64_t> measurements;
+            for (int j = 0; j < repetition_count; j++)
+            {
+                uint64_t total_cycles = 0;
+                for (uint8_t* img : images) {
+                    vector<ImageRef> corners;
+
+#if WARM_CACHE
+                    for (int y = 0; y < height; y++) {
+                        for (int x = 0; x < width; x += 64) {
+                            warm_cache_counter.fetch_add(img[row_stride * y + x], std::memory_order::memory_order_relaxed);
+                        }
+                    }
+#endif
+
+                    uint64_t begin_cycles = rdtsc();
+                    func(img, width, height, row_stride, corners, threshold);
+                    uint64_t cycles = rdtsc() - begin_cycles;
+                    total_cycles += cycles;
+                }
+                measurements.push_back(total_cycles);
+            }
+
+            std::sort(measurements.begin(), measurements.end());
+
+            uint64_t cycles = (double)measurements[measurements.size() / 2];
+
+            fprintf(outf, "%16llu\n", cycles);
+
+#endif
+            for (uint8_t* img : images) {
+                aligned_free(img);
+            }
+        }
+
+        std::fclose(outf);
+    }
+}
+
 void performance_plot(const fs::path& out_path, const fs::path& image_path, const vector<pair<string, fast_func*>>& functions) {
     CVD::Image<CVD::byte> full;
     CVD::img_load(full, image_path.string());
@@ -221,9 +347,14 @@ int main(int argc, char** argv) {
         // {"avx2_10_checkposition", fast10_avx2_checkposition}
     };
 
-    run_tests(dataset, CVD::fast_corner_detect_10, functions);
+    //run_tests(dataset, CVD::fast_corner_detect_10, functions);
     //count_lane_checks(out_dir, "../data/box0_big.png", functions);
-    //performance_plot(out_dir, "../data/box0_big.png", functions);
+#if TRAIN_BP
+    performance_plot(out_dir, "../data/box0_big.png", functions);
+#else
+    randomized_performance_plot(out_dir, "../data/box0_big.png", functions);
+#endif
+
 
     return 0;
 }

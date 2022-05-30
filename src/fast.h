@@ -1,5 +1,7 @@
 #pragma once
 
+#define _CRT_SECURE_NO_WARNINGS
+
 #include <cvd/image_io.h>
 #include <cvd/fast_corner.h>
 #include <cvd_src/faster_corner_utilities.h>
@@ -20,7 +22,7 @@
 #endif
 
 #ifndef COUNT_CHECKS
-#define COUNT_CHECKS true
+#define COUNT_CHECKS false
 #endif
 
 #if COUNT_CHECKS
@@ -40,9 +42,16 @@ extern std::vector<Lane> lane_checks;
 
 
 #ifndef PEELING_ENABLED
-#define PEELING_ENABLED true
+#define PEELING_ENABLED false
 #endif
 
+#ifndef WARM_CACHE
+#define WARM_CACHE true
+#endif
+
+#ifndef TRAIN_BP
+#define TRAIN_BP false
+#endif
 
 #define CHECK_BARRIER_SCALAR(lo, hi, other, flags)			\
 {													    	\

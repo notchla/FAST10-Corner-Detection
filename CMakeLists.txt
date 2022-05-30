@@ -30,7 +30,7 @@ target_include_directories(test-fast9 PUBLIC src libcvd)
 add_executable(test-vtune "src/test_vtune.cpp" ${Sources})
 target_link_libraries(test-vtune PUBLIC CVD)
 target_include_directories(test-vtune PUBLIC src libcvd)
-target_compile_definitions(test-vtune PUBLIC COUNT_CHECKS=false PEELING_ENABLED=false)
+target_compile_definitions(test-vtune PUBLIC COUNT_CHECKS=false PEELING_ENABLED=false WARM_CACHE=false TRAIN_BP=true)
 
 
 message("release flags" ${CMAKE_CXX_FLAGS_RELEASE})
