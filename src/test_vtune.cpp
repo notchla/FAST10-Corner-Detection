@@ -4,6 +4,9 @@
 using namespace std;
 namespace fs = std::filesystem;
 
+std::vector<Lane> lane_checks;
+uint8_t* lane_check;
+
 int main(int argc, char** argv) {
     if (argc < 3) {
         exit(1);

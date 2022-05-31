@@ -86,7 +86,9 @@ void count_lane_checks(const fs::path& out_path, const fs::path& image_path, con
     for (auto& [name, func] : functions)
     {
         stringstream out_name;
+
         out_name << name << "_" << threshold << "_checkposition.dat";
+
         FILE* outf = std::fopen((out_path / out_name.str()).generic_u8string().c_str(), "wb");
 
         uint64_t width = 512;
@@ -124,9 +126,57 @@ void count_lane_checks(const fs::path& out_path, const fs::path& image_path, con
                 std::fprintf(outf, "%4d %4d %3d %d\n", l.y, l.x, l.width, l.checks);
             }
         }
+
+        std::fclose(outf);
     }
 #endif
 }
+
+void count_dataset_checks(const fs::path& out_path, vector<DataSet>& datasets) {
+#if COUNT_CHECK_POSITION
+    int threshold = 25;
+
+    for(auto& [name, paths]: datasets) {
+        stringstream out_name;
+        out_name << name << "_checks.dat";
+
+        FILE* outf = std::fopen((out_path / out_name.str()).generic_u8string().c_str(), "wb");
+        std::fprintf(outf, "%d\n", (int)paths.size());
+
+        for (auto& p : paths) {
+            printf("%ls\n", p.c_str());
+            CVD::Image<CVD::byte> img;
+            CVD::img_load(img, p.string());
+
+            // Total number of pixels for which we run the corner detection on this image
+            uint64_t pixels = ((uint64_t)img.size().x - 3) * ((uint64_t)img.size().y - 3);
+
+            // Alloc space for lane checks
+            lane_check = (uint8_t*)calloc(img.size().x * img.size().y, sizeof(uint8_t));
+
+            // Count checks for each pixel
+            vector<ImageRef> corners;
+            fast10_scalar(img.data(), img.size().x, img.size().y, img.row_stride(), corners, threshold);
+
+            // output checks
+            std::fprintf(outf, "%d %d\n", img.size().x, img.size().y);
+            for (int i = 0; i < img.size().y; i++) {
+                for (int j = 0; j < img.size().x; j++) {
+                    std::fprintf(outf, "%1d ", lane_check[i * img.size().x + j]);
+                }
+                std::fprintf(outf, "\n");
+            }
+            std::fprintf(outf, "\n");
+
+            // Free lane checks
+            free(lane_check);
+        }
+
+        std::fclose(outf);
+    }
+#endif
+}
+
 
 atomic_uint64_t warm_cache_counter;
 
@@ -365,10 +415,11 @@ int main(int argc, char** argv) {
 
     //run_tests(dataset, CVD::fast_corner_detect_10, functions);
     //count_lane_checks(out_dir, "../data/box0_big.png", functions);
+    count_dataset_checks(out_dir, dataset);
 #if TRAIN_BP
-    performance_plot(out_dir, "../data/box0_big.png", functions);
+    //performance_plot(out_dir, "../data/box0_big.png", functions);
 #else
-    randomized_performance_plot(out_dir, "../data/box0_big.png", functions);
+    //randomized_performance_plot(out_dir, "../data/box0_big.png", functions);
 #endif
 
 
