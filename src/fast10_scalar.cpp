@@ -19,6 +19,9 @@ void fast10_scalar(uint8_t* data, uint32_t width, uint32_t height, uint32_t row_
 #if COUNT_CHECKS
             check[0]++;
 #endif
+#if COUNT_CHECK_POSITION
+			lane_check[y * width + x] = 0;
+#endif
 			const uint8_t* p = data + y * row_stride + x;
 			uint8_t lo, hi;
 			{
@@ -41,6 +44,9 @@ void fast10_scalar(uint8_t* data, uint32_t width, uint32_t height, uint32_t row_
 #if COUNT_CHECKS
             check[1]++;
 #endif
+#if COUNT_CHECK_POSITION
+			lane_check[y * width + x]++;
+#endif
 			unsigned int ans_m, ans_p, possible;
 			{
 				uint8_t ul = *(p - 2 - 2 * row_stride);
@@ -55,6 +61,9 @@ void fast10_scalar(uint8_t* data, uint32_t width, uint32_t height, uint32_t row_
 			}
 #if COUNT_CHECKS
             check[2]++;
+#endif
+#if COUNT_CHECK_POSITION
+			lane_check[y * width + x]++;
 #endif
 
 			unsigned int ans_o, ans_n;
@@ -74,6 +83,9 @@ void fast10_scalar(uint8_t* data, uint32_t width, uint32_t height, uint32_t row_
 #if COUNT_CHECKS
             check[3]++;
 #endif
+#if COUNT_CHECK_POSITION
+			lane_check[y * width + x]++;
+#endif
 			unsigned int ans_h, ans_k;
 			{
 				uint8_t left = *(p - 3);
@@ -91,6 +103,9 @@ void fast10_scalar(uint8_t* data, uint32_t width, uint32_t height, uint32_t row_
 #if COUNT_CHECKS
             check[4]++;
 #endif
+#if COUNT_CHECK_POSITION
+			lane_check[y * width + x]++;
+#endif
 			unsigned int ans_a, ans_c;
 			{
 				uint8_t a = *(p - 1 - stride);
@@ -107,6 +122,9 @@ void fast10_scalar(uint8_t* data, uint32_t width, uint32_t height, uint32_t row_
 
 #if COUNT_CHECKS
             check[5]++;
+#endif
+#if COUNT_CHECK_POSITION
+			lane_check[y * width + x]++;
 #endif
 			unsigned int ans_d, ans_f;
 			{
@@ -126,6 +144,9 @@ void fast10_scalar(uint8_t* data, uint32_t width, uint32_t height, uint32_t row_
 #if COUNT_CHECKS
             check[6]++;
 #endif
+#if COUNT_CHECK_POSITION
+			lane_check[y * width + x]++;
+#endif
 			unsigned int ans_g, ans_i;
 			{
 				uint8_t g = *(p - 3 - row_stride);
@@ -142,6 +163,9 @@ void fast10_scalar(uint8_t* data, uint32_t width, uint32_t height, uint32_t row_
 
 #if COUNT_CHECKS
             check[7]++;
+#endif
+#if COUNT_CHECK_POSITION
+			lane_check[y * width + x]++;
 #endif
 			unsigned int ans_j, ans_l;
 			{
@@ -161,11 +185,17 @@ void fast10_scalar(uint8_t* data, uint32_t width, uint32_t height, uint32_t row_
 #if COUNT_CHECKS
             check[8]++;
 #endif
+#if COUNT_CHECK_POSITION
+			lane_check[y * width + x]++;
+#endif
 			possible |= (possible >> 1);
 			
 			if (possible) {
 #if COUNT_CHECKS
                 check[9]++;
+#endif
+#if COUNT_CHECK_POSITION
+				lane_check[y * width + x]++;
 #endif
 				corners.push_back(ImageRef(x, y));
 			}

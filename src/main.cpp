@@ -3,6 +3,7 @@
 
 uint64_t check[10];
 std::vector<Lane> lane_checks;
+uint8_t* lane_check;
 
 using namespace std;
 namespace fs = std::filesystem;
@@ -96,7 +97,10 @@ void count_lane_checks(const fs::path& out_path, const fs::path& image_path, con
         ImageRef img_size(width, height);
         CVD::Image<CVD::byte> img = full.sub_image(img_start, img_size);
 
-        lane_checks.clear();
+        if (name == "scalar_10")
+            lane_check = (uint8_t*)calloc(size, sizeof(uint8_t));
+        else
+            lane_checks.clear();
 
         vector<ImageRef> corners;
         func(img.data(), img.size().x, img.size().y, img.row_stride(), corners, threshold);
@@ -105,8 +109,20 @@ void count_lane_checks(const fs::path& out_path, const fs::path& image_path, con
         for (auto& corner : corners) {
             std::fprintf(outf, "%4d %4d\n", corner.y, corner.x);
         }
-        for (auto& l : lane_checks) {
-            std::fprintf(outf, "%4d %4d %3d %d\n", l.y, l.x, l.width, l.checks);
+
+        if (name == "scalar_10") {
+            for (int i = 0; i < height; i++) {
+                for (int j = 0; j < width; j++) {
+                    std::fprintf(outf, "%1d ", *(lane_check + i * width + j));
+                }
+                std::fprintf(outf, "\n");
+            }
+            free(lane_check);
+        }
+        else {
+            for (auto& l : lane_checks) {
+                std::fprintf(outf, "%4d %4d %3d %d\n", l.y, l.x, l.width, l.checks);
+            }
         }
     }
 #endif
@@ -334,10 +350,10 @@ int main(int argc, char** argv) {
         // { "scalar", fast9_scalar },
         // { "if", fast9_if },
         // { "sse2", fast9_sse2 },
-        {"scalar_10", fast10_scalar},
-        {"sse2_10", fast10_sse2},
-        {"avx2_10", fast10_avx2},
-        {"avx512_10", fast10_avx512}
+        {"scalar_10", fast10_scalar}
+        //{"sse2_10", fast10_sse2},
+        //{"avx2_10", fast10_avx2},
+        //{"avx512_10", fast10_avx512}
         // {"slow10", fastX_slow}
         // {"scalar_10_block", fast10_scalar_block},
         // {"avx2_10_unrolled_3", fast10_avx2_unrolled_3},

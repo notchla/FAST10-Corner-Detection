@@ -30,7 +30,7 @@ extern uint64_t check[10];
 #endif
 
 #ifndef COUNT_CHECK_POSITION
-#define COUNT_CHECK_POSITION false
+#define COUNT_CHECK_POSITION true
 #endif
 
 struct Lane {
@@ -38,6 +38,7 @@ struct Lane {
 };
 #if COUNT_CHECK_POSITION
 extern std::vector<Lane> lane_checks;
+extern uint8_t* lane_check;
 #endif
 
 
