@@ -98,3 +98,6 @@ void fast10_avx2_checkposition(uint8_t* data, uint32_t width, uint32_t height, u
 void fast10_avx2_gather4x8(uint8_t* data, uint32_t width, uint32_t height, uint32_t row_stride, std::vector<ImageRef>& corners, const int barrier);
 void fast10_avx2_gather8x4(uint8_t* data, uint32_t width, uint32_t height, uint32_t row_stride, std::vector<ImageRef>& corners, const int barrier);
 void fast10_avx2_gather16x2(uint8_t* data, uint32_t width, uint32_t height, uint32_t row_stride, std::vector<ImageRef>& corners, const int barrier);
+
+void fast10_avx512_32x2(uint8_t* data, uint32_t width, uint32_t height, uint32_t row_stride, std::vector<ImageRef>& corners, const int barrier);
+void fast10_avx512_16x4(uint8_t* data, uint32_t width, uint32_t height, uint32_t row_stride, std::vector<ImageRef>& corners, const int barrier);
