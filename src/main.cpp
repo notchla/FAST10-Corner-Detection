@@ -400,10 +400,10 @@ int main(int argc, char** argv) {
         // { "scalar", fast9_scalar },
         // { "if", fast9_if },
         // { "sse2", fast9_sse2 },
-        {"scalar_10", fast10_scalar}
+        // {"scalar_10", fast10_scalar}
         //{"sse2_10", fast10_sse2},
         //{"avx2_10", fast10_avx2},
-        //{"avx512_10", fast10_avx512}
+        //{"avx512_10", fast10_avx512},
         // {"slow10", fastX_slow}
         // {"scalar_10_block", fast10_scalar_block},
         // {"avx2_10_unrolled_3", fast10_avx2_unrolled_3},
@@ -411,15 +411,20 @@ int main(int argc, char** argv) {
         // {"avx2_10_vecpeeling", fast10_avx2_vecpeeling},
         // {"avx2_10_vecpeeling_mask", fast10_avx2_vecpeeling_mask}
         // {"avx2_10_checkposition", fast10_avx2_checkposition}
+
+        //{"avx2_10_gather16x2", fast10_avx2_gather16x2},
+        //{"avx512_10_32x2", fast10_avx512_32x2},
+        //{"avx512_10_16x4", fast10_avx512_16x4},
+        {"avx512_10_8x8", fast10_avx512_8x8},
     };
 
     //run_tests(dataset, CVD::fast_corner_detect_10, functions);
     //count_lane_checks(out_dir, "../data/box0_big.png", functions);
-    count_dataset_checks(out_dir, dataset);
+    //count_dataset_checks(out_dir, dataset);
 #if TRAIN_BP
     //performance_plot(out_dir, "../data/box0_big.png", functions);
 #else
-    //randomized_performance_plot(out_dir, "../data/box0_big.png", functions);
+    randomized_performance_plot(out_dir, "../data/box0_big.png", functions);
 #endif
 
 

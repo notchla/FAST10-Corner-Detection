@@ -38,18 +38,12 @@ def line_plot(xs, ys, names, xlabel, ylabel, title, x_log=False):
 
 data_dir = "../output/"
 
-names = [ "scalar_10", "sse2_10", "avx2_10", "avx512_10"]
-lane_width = [ 1, 16, 32, 64]
+names = [ "scalar_10", "sse2_10", "avx2_10","avx512_10", "avx512_10_32x2" , "avx512_10_16x4", "avx512_10_8x8"]
+lane_width = [ 1, 16, 32, 64, 64, 64, 64]
+compilers = [ "" ]
+
 # names = names[1:]
 # lane_width = lane_width[1:]
-
-# names = [ "avx2", "avx2_blocking_1024", "avx2_blocking_512", "avx2_blocking_256"]#, "avx2_unrolled_2"]
-# lane_width = [ 32, 32, 32, 32]
-# 
-# names = [ "avx2", "avx2_unrolled_2", "avx2_unrolled_3"]
-# lane_width = [ 32, 32, 32]
-
-compilers = [ "" ]
 
 threshold = 25
 #names = names[1:]

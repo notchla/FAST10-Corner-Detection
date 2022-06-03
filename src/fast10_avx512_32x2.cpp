@@ -34,7 +34,7 @@ void fast10_avx512_32x2(uint8_t* data, uint32_t width, uint32_t height, uint32_t
     int xend = width - 3;
     int yend = height - 3;
 
-    xend -= xend % 64;
+    xend -= xend % 32;
     yend -= (yend - 3) % 2;
 
 #if PEELING_ENABLED

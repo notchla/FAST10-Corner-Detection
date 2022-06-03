@@ -16,11 +16,15 @@ fig.set_size_inches(12, 8)
 block_sizes = [
     (1, 1), 
     (16, 1), 
+    (8, 2), 
     (4, 4), 
     (32, 1),
+    (16, 2),
     (8, 4),
     (4, 8),
     (64, 1),
+    (32, 2),
+    (16, 4),
     (8, 8),
 ]
 
@@ -41,7 +45,7 @@ for index, name in enumerate(datasets):
             xend = (w - 3) - (w - 3) % bw
             assert (xend - xstart) % bw == 0
 
-            ystart = max(3, bh)
+            ystart = max(3, 4 if bh == 2 else bh)
             yend = (h - 3) - (h - 3) % bh
             assert (yend - ystart) % bh == 0
 

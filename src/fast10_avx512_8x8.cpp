@@ -21,21 +21,21 @@ typedef unsigned __int128 uint128_t;
 #define LOAD(p) _mm512_inserti64x4( \
         _mm512_castsi256_si512( \
             _mm256_insertf128_si256( \
-                _mm256_castsi128_si256(_mm_loadu_si128((__m128i*)((p)))),  \
-                _mm_loadu_si128((__m128i*)((p) + 1 * row_stride)), \
+                _mm256_castsi128_si256(_mm_set_epi64x(*(int64_t*)((p) + row_stride * 1), *(int64_t*)((p) + row_stride * 0))),  \
+                _mm_set_epi64x(*(int64_t*)((p) + row_stride * 3), *(int64_t*)((p) + row_stride * 2)),  \
                 1 \
             ) \
         ), \
         _mm256_insertf128_si256( \
-            _mm256_castsi128_si256(_mm_loadu_si128((__m128i*)((p) + 2 * row_stride))),  \
-            _mm_loadu_si128((__m128i*)((p) + 3 * row_stride)), \
+            _mm256_castsi128_si256(_mm_set_epi64x(*(int64_t*)((p) + row_stride * 5), *(int64_t*)((p) + row_stride * 4))),  \
+            _mm_set_epi64x(*(int64_t*)((p) + 7 * row_stride), *(int64_t*)((p) + 6 * row_stride)),  \
             1 \
         ),  \
         1 \
     ) \
 
 
-void fast10_avx512_16x4(uint8_t* data, uint32_t width, uint32_t height, uint32_t row_stride, std::vector<ImageRef>& corners, const int barrier)
+void fast10_avx512_8x8(uint8_t* data, uint32_t width, uint32_t height, uint32_t row_stride, std::vector<ImageRef>& corners, const int barrier)
 {
     const uint32_t stride = 3 * row_stride;
 
@@ -45,8 +45,8 @@ void fast10_avx512_16x4(uint8_t* data, uint32_t width, uint32_t height, uint32_t
     int xend = width - 3;
     int yend = height - 3;
 
-    xend -= xend % 16;
-    yend -= (yend - 3) % 4;
+    xend -= xend % 8;
+    yend -= (yend - 3) % 8;
 
 #if PEELING_ENABLED
     for (int y = 3; y < yend; y++)
@@ -59,8 +59,8 @@ void fast10_avx512_16x4(uint8_t* data, uint32_t width, uint32_t height, uint32_t
     }
 #endif
 
-    for (int y = 3; y < yend; y += 4) {
-        for (int x = 64; x < xend; x += 16)
+    for (int y = 3; y < yend; y += 8) {
+        for (int x = 64; x < xend; x += 8)
         {
 #if COUNT_CHECKS
             check[0]++;
@@ -250,8 +250,8 @@ void fast10_avx512_16x4(uint8_t* data, uint32_t width, uint32_t height, uint32_t
 
             ImageRef* corner_ptr = corners.data() + size;
 
-            for (size_t j = 0; j < 4; j++) {
-                for (size_t i = 0; i < 16; i += 8) {
+            for (size_t j = 0; j < 8; j++) {
+                for (size_t i = 0; i < 8; i += 8) {
                     __m512i data = _mm512_set_epi32(y + j, x + i + 7, y + j, x + i + 6, y + j, x + i + 5, y + j, x + i + 4, y + j, x + i + 3, y + j, x + i + 2, y + j, x + i + 1, y + j, x + i);
                     __mmask8 mask_compress = possible; 
                     int inserted = _popcnt32(mask_compress);
