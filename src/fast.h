@@ -43,11 +43,11 @@ extern uint8_t* lane_check;
 
 
 #ifndef PEELING_ENABLED
-#define PEELING_ENABLED false
+#define PEELING_ENABLED true
 #endif
 
 #ifndef WARM_CACHE
-#define WARM_CACHE true
+#define WARM_CACHE false
 #endif
 
 #ifndef TRAIN_BP
@@ -107,3 +107,5 @@ void fast10_avx512_16x4(uint8_t* data, uint32_t width, uint32_t height, uint32_t
 void fast10_avx512_8x8(uint8_t* data, uint32_t width, uint32_t height, uint32_t row_stride, std::vector<ImageRef>& corners, const int barrier);
 
 void fast10_avx512_set(uint8_t* data, uint32_t width, uint32_t height, uint32_t row_stride, std::vector<ImageRef>& corners, const int barrier);
+
+void libcvd_wrapper(uint8_t* data, uint32_t width, uint32_t height, uint32_t row_stride, std::vector<ImageRef>& corners, const int barrier, cvd_fast_func* libcvd_f);
