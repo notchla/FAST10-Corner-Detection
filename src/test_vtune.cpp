@@ -13,13 +13,12 @@ int main(int argc, char** argv) {
     }
 
     vector<pair<string, fast_func*>> functions = {
-        // {"slow10", fastX_slow}
-        {"scalar_10", fast10_scalar},
-        {"sse2_10", fast10_sse2},
-        {"avx2_10", fast10_avx2},
-        {"avx2_blocking_10", fast10_avx2_blocking},
+        // {"slow", fastX_slow}
+        {"scalar", fast10_scalar},
+        {"sse2", fast10_sse2},
+        {"avx2", fast10_avx2},
 #if AVX512_ENABLED
-        {"avx512_10", fast10_avx512},
+        {"avx512", fast10_avx512},
 #endif
     };
 
@@ -65,9 +64,9 @@ int main(int argc, char** argv) {
     double seconds = 10;
     double expected_cycles = (double)size;
     uint64_t count = std::max((uint64_t)3ull, (uint64_t)std::ceil(seconds * 2.4e9 / (double)expected_cycles)) * 9;
-    if (name == "sse2_10")
+    if (name == "sse2")
         count *= 16;
-    if (name == "avx2_10" || name == "avx2_blocking_10")
+    if (name == "avx2" || name == "avx2_blocking")
         count *= 32;
 
     std::vector<ImageRef> corners;

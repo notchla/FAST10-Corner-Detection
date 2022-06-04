@@ -12,7 +12,7 @@
         flags = ~(m1 | (m2 << 32)); \
     }
 
-void fast10_avx2_gather16x2(uint8_t* data, uint32_t width, uint32_t height, uint32_t row_stride, std::vector<ImageRef>& corners, const int barrier)
+void fast10_avx2_16x2(uint8_t* data, uint32_t width, uint32_t height, uint32_t row_stride, std::vector<ImageRef>& corners, const int barrier)
 {
     const uint32_t stride = 3 * row_stride;
 

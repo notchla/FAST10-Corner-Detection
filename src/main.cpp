@@ -211,16 +211,16 @@ void randomized_performance_plot(const fs::path& out_path, const fs::path& image
             ImageRef img_size(width, height);
 
             // Number of different images to test to avoid training the branch predictor and not fitting the measurements to a single image
-            uint64_t target_size = 32 * 1024 * 1024;
+            uint64_t target_size = 128 * 1024 * 1024;
             uint64_t images_count = max(1ull, (target_size + (width * height - 1)) / (width * height));
 
             // Number of repetitions for performance measurements
-            uint64_t repetition_count = 5;
+            uint64_t repetition_count = 10;
             if (name.find("sse2") != string::npos) {
-                repetition_count = 10;
+                repetition_count = 20;
             }
             else if (name.find("avx") != string::npos) {
-                repetition_count = 15;
+                repetition_count = 30;
             }
 
             srand(1337);
@@ -397,25 +397,25 @@ int main(int argc, char** argv) {
 
     auto dataset = find_datasets(data_dir);
     vector<pair<string, fast_func*>> functions = {
-        // { "scalar", fast9_scalar },
-        // { "if", fast9_if },
-        // { "sse2", fast9_sse2 },
-        // {"scalar_10", fast10_scalar}
-        //{"sse2_10", fast10_sse2},
-        //{"avx2_10", fast10_avx2},
-        //{"avx512_10", fast10_avx512},
-        // {"slow10", fastX_slow}
+        // {"slow", fastX_slow}
+        {"scalar", fast10_scalar},
+        {"sse2", fast10_sse2},
+        {"avx2", fast10_avx2},
+        {"avx512", fast10_avx512},
         // {"scalar_10_block", fast10_scalar_block},
-        // {"avx2_10_unrolled_3", fast10_avx2_unrolled_3},
-        // {"avx2_10_unrolled_2", fast10_avx2_unrolled_2},
-        // {"avx2_10_vecpeeling", fast10_avx2_vecpeeling},
-        // {"avx2_10_vecpeeling_mask", fast10_avx2_vecpeeling_mask}
-        // {"avx2_10_checkposition", fast10_avx2_checkposition}
+        {"avx2_unrolled_3", fast10_avx2_unrolled_3},
+        {"avx2_unrolled_2", fast10_avx2_unrolled_2},
+        {"avx2_blocking_256", fast10_avx2_blocking_256},
+        {"avx2_blocking_512", fast10_avx2_blocking_512},
+        {"avx2_blocking_1024", fast10_avx2_blocking_1024},
 
-        //{"avx2_10_gather16x2", fast10_avx2_gather16x2},
-        //{"avx512_10_32x2", fast10_avx512_32x2},
-        //{"avx512_10_16x4", fast10_avx512_16x4},
-        {"avx512_10_8x8", fast10_avx512_8x8},
+        // {"avx2_10_vecpeeling", fast10_avx2_vecpeeling},
+        // {"avx2_10_vecpeeling_mask", fast10_avx2_vecpeeling_mask},
+
+        {"avx2_16x2", fast10_avx2_16x2},
+        {"avx512_32x2", fast10_avx512_32x2},
+        {"avx512_16x4", fast10_avx512_16x4},
+        {"avx512_8x8", fast10_avx512_8x8},
     };
 
     //run_tests(dataset, CVD::fast_corner_detect_10, functions);
