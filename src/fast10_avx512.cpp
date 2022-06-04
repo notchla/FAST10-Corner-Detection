@@ -38,10 +38,219 @@ void fast10_avx512(uint8_t* data, uint32_t width, uint32_t height, uint32_t row_
     {
 
 #if PEELING_ENABLED
-        for (int x = 3; x < 64; x++) {
+        for(int x = 3; x < 64; x += 64)
+        {
+#if COUNT_CHECKS
+            check[0]++;
+#endif
+
             const uint8_t* p = data + y * row_stride + x;
-            if (CVD::is_corner_10<CVD::Less>(p, row_stride, barrier) || CVD::is_corner_10<CVD::Greater>(p, row_stride, barrier))
-                corners.push_back(ImageRef(x, y));
+
+            __m512i lo, hi;
+            {
+                // lo = *p - c_barrier < 0 ? 0 : *p - c_barrier;
+                // hi = *p + c_barrier > 255 ? 255 : *p + c_barrier;
+
+                const __m512i v = _mm512_loadu_si512(p);
+                lo = _mm512_subs_epu8(v, barriers);
+                hi = _mm512_adds_epu8(barriers, v);
+            }
+
+            uint128_t ans_b, ans_e;
+            {
+                // uint8_t top = *(p - stride);
+                // uint8_t bottom = *(p + stride);
+
+                __m512i top = _mm512_loadu_si512(p - stride);
+                __m512i bottom = _mm512_loadu_si512(p + stride);
+
+                CHECK_BARRIER_AXV512(lo, hi, top, ans_b);
+                CHECK_BARRIER_AXV512(lo, hi, bottom, ans_e);
+
+                if(!(ans_b | ans_e))
+                    continue;
+            }
+
+#if COUNT_CHECKS
+            check[1]++;
+#endif
+            uint128_t ans_m, ans_p, possible;
+            {
+                // uint8_t ul = *(p - 2 - 2 * row_stride);
+                // uint8_t lr = *(p + 2 + 2 * row_stride);
+
+                __m512i ul = _mm512_loadu_si512(p - 2 - 2 * row_stride);
+                __m512i lr = _mm512_loadu_si512(p + 2 + 2 * row_stride);
+
+                CHECK_BARRIER_AXV512(lo, hi, ul, ans_m);
+                CHECK_BARRIER_AXV512(lo, hi, lr, ans_p);
+
+                possible = (ans_m & ans_b) | (ans_e & ans_p);
+                if(!possible)
+                    continue;
+            }
+
+
+#if COUNT_CHECKS
+            check[2]++;
+#endif
+            uint128_t ans_o, ans_n;
+            {
+                // uint8_t ll = *(p - 2 + 2 * row_stride);
+                // uint8_t ur = *(p + 2 - 2 * row_stride);
+
+                __m512i ll = _mm512_loadu_si512(p - 2 + 2 * row_stride);
+                __m512i ur = _mm512_loadu_si512(p + 2 - 2 * row_stride);
+
+                CHECK_BARRIER_AXV512(lo, hi, ll, ans_o);
+                CHECK_BARRIER_AXV512(lo, hi, ur, ans_n);
+
+                possible &= ans_o | (ans_b & ans_n);
+                possible &= ans_n | (ans_e & ans_o);
+                if(!possible)
+                    continue;
+            }
+
+#if COUNT_CHECKS
+            check[3]++;
+#endif
+            uint128_t ans_h, ans_k;
+            {
+                // uint8_t left = *(p - 3);
+                // uint8_t right = *(p + 3);
+
+                __m512i left = _mm512_loadu_si512(p - 3);
+                __m512i right = _mm512_loadu_si512(p + 3);
+                
+                CHECK_BARRIER_AXV512(lo, hi, left, ans_h);
+                CHECK_BARRIER_AXV512(lo, hi, right, ans_k);
+
+                possible &= ans_h | (ans_n & ans_k & ans_p);
+                possible &= ans_k | (ans_m & ans_h & ans_o);
+                if(!possible)
+                    continue;
+            }
+
+#if COUNT_CHECKS
+            check[4]++;
+#endif
+            uint128_t ans_a, ans_c;
+            {
+                // uint8_t a = *(p - 1 - stride);
+                // uint8_t c = *(p + 1 - stride);
+
+                __m512i a = _mm512_loadu_si512(p - 1 - stride);
+                __m512i c = _mm512_loadu_si512(p + 1 - stride);
+
+                CHECK_BARRIER_AXV512(lo, hi, a, ans_a);
+                CHECK_BARRIER_AXV512(lo, hi, c, ans_c);
+
+                possible &= ans_a | (ans_e & ans_p);
+                possible &= ans_c | (ans_o & ans_e);
+                if(!possible)
+                    continue;
+            }
+
+#if COUNT_CHECKS
+            check[5]++;
+#endif
+
+            uint128_t ans_d, ans_f;
+            {
+                __m512i d = _mm512_loadu_si512(p - 1 + stride);
+                __m512i f = _mm512_loadu_si512(p + 1 + stride);
+
+                //__m256i f = _mm256_insert_epi16(_mm256_srli_si256(d, 2), *(const unsigned short*)(p + 15 + stride), 7);
+                CHECK_BARRIER_AXV512(lo, hi, d, ans_d);
+                CHECK_BARRIER_AXV512(lo, hi, f, ans_f);
+                const uint128_t ans_abc = ans_a & ans_b & ans_c;
+                possible &= ans_d | (ans_abc & ans_n);
+                possible &= ans_f | (ans_m & ans_abc);
+                if(!possible)
+                    continue;
+            }
+
+#if COUNT_CHECKS
+            check[6]++;
+#endif
+            uint128_t ans_g, ans_i;
+            {
+                // uint8_t g = *(p - 3 - row_stride);
+                // uint8_t ii = *(p - 3 + row_stride);
+
+                __m512i g = _mm512_loadu_si512(p - 3 - row_stride);
+                __m512i ii = _mm512_loadu_si512(p - 3 + row_stride);
+
+                CHECK_BARRIER_AXV512(lo, hi, g, ans_g);
+                CHECK_BARRIER_AXV512(lo, hi, ii, ans_i);
+
+                possible &= ans_g | (ans_f & ans_p & ans_k);
+                possible &= ans_i | (ans_c & ans_n & ans_k);
+                if(!possible)
+                    continue;
+            }
+
+#if COUNT_CHECKS
+            check[7]++;
+#endif
+
+            uint128_t ans_j, ans_l;
+            {
+                // uint8_t jj = *(p + 3 - row_stride);
+                // uint8_t l = *(p + 3 + row_stride);
+
+                __m512i jj = _mm512_loadu_si512(p + 3 - row_stride);
+                __m512i l = _mm512_loadu_si512(p + 3 + row_stride);
+
+                CHECK_BARRIER_AXV512(lo, hi, jj, ans_j);
+                CHECK_BARRIER_AXV512(lo, hi, l, ans_l);
+
+                const uint128_t ans_ghi = ans_g & ans_h & ans_i;
+                possible &= ans_j | (ans_d & ans_o & ans_ghi);
+                possible &= ans_l | (ans_m & ans_a & ans_ghi);
+                if(!possible)
+                    continue;
+            }
+
+#if COUNT_CHECKS
+            check[8]++;
+#endif
+
+            possible |= (possible >> 64);
+
+            uint64_t possible_64 = (uint64_t)possible;
+
+            possible_64 &= 0x1FFFFFFFFFFFFFFF;
+
+            int n_corners = _popcnt64(possible_64);
+
+            size_t size = corners.size();
+
+            corners.resize(corners.size() + n_corners);
+
+            ImageRef* corner_ptr = corners.data() + size;
+
+            __m512i ys = _mm512_set1_epi32(y);
+            __m512i xs = _mm512_add_epi32(_mm512_set1_epi32(x), offsets);
+
+            for(size_t i = 0; i < 64; i+=8){
+                __m512i data = _mm512_mask_blend_epi32(blend_mask, xs, ys);
+
+                __mmask8 mask_compress = possible_64;
+                int inserted = _popcnt32(mask_compress);
+                _mm512_mask_compressstoreu_epi64(corner_ptr, mask_compress, data);
+                corner_ptr += inserted;
+
+                xs = _mm512_add_epi32(xs, increment);
+                possible_64 = possible_64 >> 8;
+            }
+
+            // for (uint128_t i = 0; i < 61; i++) {
+            //     if (possible & ((uint128_t)1 << i)) {
+            //         corners.push_back(ImageRef(x + i, y));
+            //     }
+            // }
+
         }
 #endif
 
@@ -241,13 +450,13 @@ void fast10_avx512(uint8_t* data, uint32_t width, uint32_t height, uint32_t row_
             for(size_t i = 0; i < 64; i+=8){
                 __m512i data = _mm512_mask_blend_epi32(blend_mask, xs, ys);
 
-                __mmask8 mask_compress = possible;
+                __mmask8 mask_compress = possible_64;
                 int inserted = _popcnt32(mask_compress);
                 _mm512_mask_compressstoreu_epi64(corner_ptr, mask_compress, data);
                 corner_ptr += inserted;
 
                 xs = _mm512_add_epi32(xs, increment);
-                possible = possible >> 8;
+                possible_64 = possible_64 >> 8;
             }
 
 
@@ -262,10 +471,222 @@ void fast10_avx512(uint8_t* data, uint32_t width, uint32_t height, uint32_t row_
         }
 
 #if PEELING_ENABLED
-        for (int x = xend; x < width - 3; x++) {
+        for(int x = xend-3; x < width - 3; x += 64)
+        {
+#if COUNT_CHECKS
+            check[0]++;
+#endif
+
             const uint8_t* p = data + y * row_stride + x;
-            if (CVD::is_corner_10<CVD::Less>(p, row_stride, barrier) || CVD::is_corner_10<CVD::Greater>(p, row_stride, barrier))
-                corners.push_back(ImageRef(x, y));
+
+            __m512i lo, hi;
+            {
+                // lo = *p - c_barrier < 0 ? 0 : *p - c_barrier;
+                // hi = *p + c_barrier > 255 ? 255 : *p + c_barrier;
+
+                const __m512i v = _mm512_loadu_si512(p);
+                lo = _mm512_subs_epu8(v, barriers);
+                hi = _mm512_adds_epu8(barriers, v);
+            }
+
+            uint128_t ans_b, ans_e;
+            {
+                // uint8_t top = *(p - stride);
+                // uint8_t bottom = *(p + stride);
+
+                __m512i top = _mm512_loadu_si512(p - stride);
+                __m512i bottom = _mm512_loadu_si512(p + stride);
+
+                CHECK_BARRIER_AXV512(lo, hi, top, ans_b);
+                CHECK_BARRIER_AXV512(lo, hi, bottom, ans_e);
+
+                if(!(ans_b | ans_e))
+                    continue;
+            }
+
+#if COUNT_CHECKS
+            check[1]++;
+#endif
+            uint128_t ans_m, ans_p, possible;
+            {
+                // uint8_t ul = *(p - 2 - 2 * row_stride);
+                // uint8_t lr = *(p + 2 + 2 * row_stride);
+
+                __m512i ul = _mm512_loadu_si512(p - 2 - 2 * row_stride);
+                __m512i lr = _mm512_loadu_si512(p + 2 + 2 * row_stride);
+
+                CHECK_BARRIER_AXV512(lo, hi, ul, ans_m);
+                CHECK_BARRIER_AXV512(lo, hi, lr, ans_p);
+
+                possible = (ans_m & ans_b) | (ans_e & ans_p);
+                if(!possible)
+                    continue;
+            }
+
+
+#if COUNT_CHECKS
+            check[2]++;
+#endif
+            uint128_t ans_o, ans_n;
+            {
+                // uint8_t ll = *(p - 2 + 2 * row_stride);
+                // uint8_t ur = *(p + 2 - 2 * row_stride);
+
+                __m512i ll = _mm512_loadu_si512(p - 2 + 2 * row_stride);
+                __m512i ur = _mm512_loadu_si512(p + 2 - 2 * row_stride);
+
+                CHECK_BARRIER_AXV512(lo, hi, ll, ans_o);
+                CHECK_BARRIER_AXV512(lo, hi, ur, ans_n);
+
+                possible &= ans_o | (ans_b & ans_n);
+                possible &= ans_n | (ans_e & ans_o);
+                if(!possible)
+                    continue;
+            }
+
+#if COUNT_CHECKS
+            check[3]++;
+#endif
+            uint128_t ans_h, ans_k;
+            {
+                // uint8_t left = *(p - 3);
+                // uint8_t right = *(p + 3);
+
+                __m512i left = _mm512_loadu_si512(p - 3);
+                __m512i right = _mm512_loadu_si512(p + 3);
+                
+                CHECK_BARRIER_AXV512(lo, hi, left, ans_h);
+                CHECK_BARRIER_AXV512(lo, hi, right, ans_k);
+
+                possible &= ans_h | (ans_n & ans_k & ans_p);
+                possible &= ans_k | (ans_m & ans_h & ans_o);
+                if(!possible)
+                    continue;
+            }
+
+#if COUNT_CHECKS
+            check[4]++;
+#endif
+            uint128_t ans_a, ans_c;
+            {
+                // uint8_t a = *(p - 1 - stride);
+                // uint8_t c = *(p + 1 - stride);
+
+                __m512i a = _mm512_loadu_si512(p - 1 - stride);
+                __m512i c = _mm512_loadu_si512(p + 1 - stride);
+
+                CHECK_BARRIER_AXV512(lo, hi, a, ans_a);
+                CHECK_BARRIER_AXV512(lo, hi, c, ans_c);
+
+                possible &= ans_a | (ans_e & ans_p);
+                possible &= ans_c | (ans_o & ans_e);
+                if(!possible)
+                    continue;
+            }
+
+#if COUNT_CHECKS
+            check[5]++;
+#endif
+
+            uint128_t ans_d, ans_f;
+            {
+                __m512i d = _mm512_loadu_si512(p - 1 + stride);
+                __m512i f = _mm512_loadu_si512(p + 1 + stride);
+
+                //__m256i f = _mm256_insert_epi16(_mm256_srli_si256(d, 2), *(const unsigned short*)(p + 15 + stride), 7);
+                CHECK_BARRIER_AXV512(lo, hi, d, ans_d);
+                CHECK_BARRIER_AXV512(lo, hi, f, ans_f);
+                const uint128_t ans_abc = ans_a & ans_b & ans_c;
+                possible &= ans_d | (ans_abc & ans_n);
+                possible &= ans_f | (ans_m & ans_abc);
+                if(!possible)
+                    continue;
+            }
+
+#if COUNT_CHECKS
+            check[6]++;
+#endif
+            uint128_t ans_g, ans_i;
+            {
+                // uint8_t g = *(p - 3 - row_stride);
+                // uint8_t ii = *(p - 3 + row_stride);
+
+                __m512i g = _mm512_loadu_si512(p - 3 - row_stride);
+                __m512i ii = _mm512_loadu_si512(p - 3 + row_stride);
+
+                CHECK_BARRIER_AXV512(lo, hi, g, ans_g);
+                CHECK_BARRIER_AXV512(lo, hi, ii, ans_i);
+
+                possible &= ans_g | (ans_f & ans_p & ans_k);
+                possible &= ans_i | (ans_c & ans_n & ans_k);
+                if(!possible)
+                    continue;
+            }
+
+#if COUNT_CHECKS
+            check[7]++;
+#endif
+
+            uint128_t ans_j, ans_l;
+            {
+                // uint8_t jj = *(p + 3 - row_stride);
+                // uint8_t l = *(p + 3 + row_stride);
+
+                __m512i jj = _mm512_loadu_si512(p + 3 - row_stride);
+                __m512i l = _mm512_loadu_si512(p + 3 + row_stride);
+
+                CHECK_BARRIER_AXV512(lo, hi, jj, ans_j);
+                CHECK_BARRIER_AXV512(lo, hi, l, ans_l);
+
+                const uint128_t ans_ghi = ans_g & ans_h & ans_i;
+                possible &= ans_j | (ans_d & ans_o & ans_ghi);
+                possible &= ans_l | (ans_m & ans_a & ans_ghi);
+                if(!possible)
+                    continue;
+            }
+
+#if COUNT_CHECKS
+            check[8]++;
+#endif
+
+            possible |= (possible >> 64);
+
+            uint64_t possible_64 = (uint64_t)possible;
+
+            possible_64 &= 0xFFFFFFFFFFFFFFF8;
+
+            int n_corners = _popcnt64(possible_64);
+
+            size_t size = corners.size();
+
+            corners.resize(corners.size() + n_corners);
+
+            ImageRef* corner_ptr = corners.data() + size;
+
+            __m512i ys = _mm512_set1_epi32(y);
+            __m512i xs = _mm512_add_epi32(_mm512_set1_epi32(x), offsets);
+
+            for(size_t i = 0; i < 64; i+=8){
+                __m512i data = _mm512_mask_blend_epi32(blend_mask, xs, ys);
+
+                __mmask8 mask_compress = possible_64;
+                int inserted = _popcnt32(mask_compress);
+                _mm512_mask_compressstoreu_epi64(corner_ptr, mask_compress, data);
+                corner_ptr += inserted;
+
+                xs = _mm512_add_epi32(xs, increment);
+                possible_64 = possible_64 >> 8;
+            }
+
+
+
+            // //todo change for 512
+            // for (uint128_t i = 3; i < 64; i++) {
+            //     if (possible & ((uint128_t)1 << i)) {
+            //         corners.push_back(ImageRef(x + i, y));
+            //     }
+            // }
+
         }
 #endif
     }
