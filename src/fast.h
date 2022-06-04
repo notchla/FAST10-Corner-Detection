@@ -22,7 +22,7 @@
 #endif
 
 #ifndef COUNT_CHECKS
-#define COUNT_CHECKS false
+#define COUNT_CHECKS true
 #endif
 
 #if COUNT_CHECKS
@@ -88,7 +88,6 @@ void fast10_avx2_unrolled_2(uint8_t* data, uint32_t width, uint32_t height, uint
 void fast10_avx2_unrolled_3(uint8_t* data, uint32_t width, uint32_t height, uint32_t row_stride, std::vector<ImageRef>& corners, const int barrier);
 
 void fast10_scalar_block(uint8_t* data, uint32_t width, uint32_t height, uint32_t row_stride, std::vector<ImageRef>& corners, const int barrier);
-//void fast10_avx2_blocking(uint8_t* data, uint32_t width, uint32_t height, uint32_t row_stride, std::vector<ImageRef>& corners, const int barrier);
 void fast10_avx2_blocking_256(uint8_t* data, uint32_t width, uint32_t height, uint32_t row_stride, std::vector<ImageRef>& corners, const int barrier);
 void fast10_avx2_blocking_512(uint8_t* data, uint32_t width, uint32_t height, uint32_t row_stride, std::vector<ImageRef>& corners, const int barrier);
 void fast10_avx2_blocking_1024(uint8_t* data, uint32_t width, uint32_t height, uint32_t row_stride, std::vector<ImageRef>& corners, const int barrier);
@@ -106,3 +105,5 @@ void fast10_avx2_16x2(uint8_t* data, uint32_t width, uint32_t height, uint32_t r
 void fast10_avx512_32x2(uint8_t* data, uint32_t width, uint32_t height, uint32_t row_stride, std::vector<ImageRef>& corners, const int barrier);
 void fast10_avx512_16x4(uint8_t* data, uint32_t width, uint32_t height, uint32_t row_stride, std::vector<ImageRef>& corners, const int barrier);
 void fast10_avx512_8x8(uint8_t* data, uint32_t width, uint32_t height, uint32_t row_stride, std::vector<ImageRef>& corners, const int barrier);
+
+void fast10_avx512_set(uint8_t* data, uint32_t width, uint32_t height, uint32_t row_stride, std::vector<ImageRef>& corners, const int barrier);

@@ -30,6 +30,10 @@ void fast10_avx512(uint8_t* data, uint32_t width, uint32_t height, uint32_t row_
 
     int yend = height -3;
 
+    __m512i offsets   = _mm512_set_epi32(0, 7, 0, 6, 0, 5, 0, 4, 0, 3, 0, 2, 0, 1, 0, 0);
+    __m512i increment = _mm512_set1_epi32(8);
+    __mmask16 blend_mask = 0xAAAA;
+
     for(int y = 3; y < yend; y++)
     {
 
@@ -231,12 +235,19 @@ void fast10_avx512(uint8_t* data, uint32_t width, uint32_t height, uint32_t row_
 
             ImageRef* corner_ptr = corners.data() + size;
 
+            __m512i ys = _mm512_set1_epi32(y);
+            __m512i xs = _mm512_add_epi32(_mm512_set1_epi32(x), offsets);
+
             for(size_t i = 0; i < 64; i+=8){
-                __m512i data = _mm512_set_epi32(y, x + i + 7, y, x + i + 6, y, x + i + 5, y, x + i + 4, y, x + i + 3, y, x + i + 2, y, x + i + 1, y, x + i);
-                __mmask8 mask_compress = possible >> i;
+                __m512i data = _mm512_mask_blend_epi32(blend_mask, xs, ys);
+
+                __mmask8 mask_compress = possible;
                 int inserted = _popcnt32(mask_compress);
                 _mm512_mask_compressstoreu_epi64(corner_ptr, mask_compress, data);
                 corner_ptr += inserted;
+
+                xs = _mm512_add_epi32(xs, increment);
+                possible = possible >> 8;
             }
 
 

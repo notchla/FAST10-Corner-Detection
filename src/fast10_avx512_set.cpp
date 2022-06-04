@@ -17,14 +17,8 @@ typedef unsigned __int128 uint128_t;
         flags = ~(m1 | (m2 << 64)); \
     }
 
-//#define LOAD(p) (_mm512_loadu_si512(p))
-#define LOAD(p) (  \
-    _mm512_inserti64x4( \
-        _mm512_castsi256_si512(_mm256_loadu_si256((__m256i*)(p))),  \
-        _mm256_loadu_si256((__m256i*)((p) + row_stride)), 1)  \
-    ) 
 
-void fast10_avx512_32x2(uint8_t* data, uint32_t width, uint32_t height, uint32_t row_stride, std::vector<ImageRef>& corners, const int barrier)
+void fast10_avx512_set(uint8_t* data, uint32_t width, uint32_t height, uint32_t row_stride, std::vector<ImageRef>& corners, const int barrier)
 {
     const uint32_t stride = 3 * row_stride;
 
@@ -32,29 +26,22 @@ void fast10_avx512_32x2(uint8_t* data, uint32_t width, uint32_t height, uint32_t
     __m512i barriers = _mm512_set1_epi8(c_barrier);
 
     int xend = width - 3;
-    int yend = height - 3;
+    xend -= (width - 3) % 64;
 
-    xend -= xend % 32;
-    yend -= (yend - 3) % 2;
+    int yend = height -3;
 
-    __m512i offsets   = _mm512_set_epi32(0, 7, 0, 6, 0, 5, 0, 4, 0, 3, 0, 2, 0, 1, 0, 0);
-    __m512i x_increment = _mm512_set1_epi32(8);
-    __m512i y_increment = _mm512_set1_epi32(1);
-    __mmask16 blend_mask = 0xAAAA;
+    for(int y = 3; y < yend; y++)
+    {
 
 #if PEELING_ENABLED
-    for (int y = 3; y < yend; y++)
-    {
         for (int x = 3; x < 64; x++) {
             const uint8_t* p = data + y * row_stride + x;
             if (CVD::is_corner_10<CVD::Less>(p, row_stride, barrier) || CVD::is_corner_10<CVD::Greater>(p, row_stride, barrier))
                 corners.push_back(ImageRef(x, y));
         }
-    }
 #endif
 
-    for (int y = 3; y < yend; y += 2) {
-        for (int x = 64; x < xend; x += 32)
+        for(int x = 64; x < xend; x += 64)
         {
 #if COUNT_CHECKS
             check[0]++;
@@ -67,7 +54,7 @@ void fast10_avx512_32x2(uint8_t* data, uint32_t width, uint32_t height, uint32_t
                 // lo = *p - c_barrier < 0 ? 0 : *p - c_barrier;
                 // hi = *p + c_barrier > 255 ? 255 : *p + c_barrier;
 
-                const __m512i v = LOAD(p);
+                const __m512i v = _mm512_loadu_si512(p);
                 lo = _mm512_subs_epu8(v, barriers);
                 hi = _mm512_adds_epu8(barriers, v);
             }
@@ -77,13 +64,13 @@ void fast10_avx512_32x2(uint8_t* data, uint32_t width, uint32_t height, uint32_t
                 // uint8_t top = *(p - stride);
                 // uint8_t bottom = *(p + stride);
 
-                __m512i top = LOAD(p - stride);
-                __m512i bottom = LOAD(p + stride);
+                __m512i top = _mm512_loadu_si512(p - stride);
+                __m512i bottom = _mm512_loadu_si512(p + stride);
 
                 CHECK_BARRIER_AXV512(lo, hi, top, ans_b);
                 CHECK_BARRIER_AXV512(lo, hi, bottom, ans_e);
 
-                if (!(ans_b | ans_e))
+                if(!(ans_b | ans_e))
                     continue;
             }
 
@@ -95,14 +82,14 @@ void fast10_avx512_32x2(uint8_t* data, uint32_t width, uint32_t height, uint32_t
                 // uint8_t ul = *(p - 2 - 2 * row_stride);
                 // uint8_t lr = *(p + 2 + 2 * row_stride);
 
-                __m512i ul = LOAD(p - 2 - 2 * row_stride);
-                __m512i lr = LOAD(p + 2 + 2 * row_stride);
+                __m512i ul = _mm512_loadu_si512(p - 2 - 2 * row_stride);
+                __m512i lr = _mm512_loadu_si512(p + 2 + 2 * row_stride);
 
                 CHECK_BARRIER_AXV512(lo, hi, ul, ans_m);
                 CHECK_BARRIER_AXV512(lo, hi, lr, ans_p);
 
                 possible = (ans_m & ans_b) | (ans_e & ans_p);
-                if (!possible)
+                if(!possible)
                     continue;
             }
 
@@ -115,15 +102,15 @@ void fast10_avx512_32x2(uint8_t* data, uint32_t width, uint32_t height, uint32_t
                 // uint8_t ll = *(p - 2 + 2 * row_stride);
                 // uint8_t ur = *(p + 2 - 2 * row_stride);
 
-                __m512i ll = LOAD(p - 2 + 2 * row_stride);
-                __m512i ur = LOAD(p + 2 - 2 * row_stride);
+                __m512i ll = _mm512_loadu_si512(p - 2 + 2 * row_stride);
+                __m512i ur = _mm512_loadu_si512(p + 2 - 2 * row_stride);
 
                 CHECK_BARRIER_AXV512(lo, hi, ll, ans_o);
                 CHECK_BARRIER_AXV512(lo, hi, ur, ans_n);
 
                 possible &= ans_o | (ans_b & ans_n);
                 possible &= ans_n | (ans_e & ans_o);
-                if (!possible)
+                if(!possible)
                     continue;
             }
 
@@ -135,15 +122,15 @@ void fast10_avx512_32x2(uint8_t* data, uint32_t width, uint32_t height, uint32_t
                 // uint8_t left = *(p - 3);
                 // uint8_t right = *(p + 3);
 
-                __m512i left = LOAD(p - 3);
-                __m512i right = LOAD(p + 3);
-
+                __m512i left = _mm512_loadu_si512(p - 3);
+                __m512i right = _mm512_loadu_si512(p + 3);
+                
                 CHECK_BARRIER_AXV512(lo, hi, left, ans_h);
                 CHECK_BARRIER_AXV512(lo, hi, right, ans_k);
 
                 possible &= ans_h | (ans_n & ans_k & ans_p);
                 possible &= ans_k | (ans_m & ans_h & ans_o);
-                if (!possible)
+                if(!possible)
                     continue;
             }
 
@@ -155,15 +142,15 @@ void fast10_avx512_32x2(uint8_t* data, uint32_t width, uint32_t height, uint32_t
                 // uint8_t a = *(p - 1 - stride);
                 // uint8_t c = *(p + 1 - stride);
 
-                __m512i a = LOAD(p - 1 - stride);
-                __m512i c = LOAD(p + 1 - stride);
+                __m512i a = _mm512_loadu_si512(p - 1 - stride);
+                __m512i c = _mm512_loadu_si512(p + 1 - stride);
 
                 CHECK_BARRIER_AXV512(lo, hi, a, ans_a);
                 CHECK_BARRIER_AXV512(lo, hi, c, ans_c);
 
                 possible &= ans_a | (ans_e & ans_p);
                 possible &= ans_c | (ans_o & ans_e);
-                if (!possible)
+                if(!possible)
                     continue;
             }
 
@@ -173,8 +160,8 @@ void fast10_avx512_32x2(uint8_t* data, uint32_t width, uint32_t height, uint32_t
 
             uint128_t ans_d, ans_f;
             {
-                __m512i d = LOAD(p - 1 + stride);
-                __m512i f = LOAD(p + 1 + stride);
+                __m512i d = _mm512_loadu_si512(p - 1 + stride);
+                __m512i f = _mm512_loadu_si512(p + 1 + stride);
 
                 //__m256i f = _mm256_insert_epi16(_mm256_srli_si256(d, 2), *(const unsigned short*)(p + 15 + stride), 7);
                 CHECK_BARRIER_AXV512(lo, hi, d, ans_d);
@@ -182,7 +169,7 @@ void fast10_avx512_32x2(uint8_t* data, uint32_t width, uint32_t height, uint32_t
                 const uint128_t ans_abc = ans_a & ans_b & ans_c;
                 possible &= ans_d | (ans_abc & ans_n);
                 possible &= ans_f | (ans_m & ans_abc);
-                if (!possible)
+                if(!possible)
                     continue;
             }
 
@@ -194,15 +181,15 @@ void fast10_avx512_32x2(uint8_t* data, uint32_t width, uint32_t height, uint32_t
                 // uint8_t g = *(p - 3 - row_stride);
                 // uint8_t ii = *(p - 3 + row_stride);
 
-                __m512i g = LOAD(p - 3 - row_stride);
-                __m512i ii = LOAD(p - 3 + row_stride);
+                __m512i g = _mm512_loadu_si512(p - 3 - row_stride);
+                __m512i ii = _mm512_loadu_si512(p - 3 + row_stride);
 
                 CHECK_BARRIER_AXV512(lo, hi, g, ans_g);
                 CHECK_BARRIER_AXV512(lo, hi, ii, ans_i);
 
                 possible &= ans_g | (ans_f & ans_p & ans_k);
                 possible &= ans_i | (ans_c & ans_n & ans_k);
-                if (!possible)
+                if(!possible)
                     continue;
             }
 
@@ -215,8 +202,8 @@ void fast10_avx512_32x2(uint8_t* data, uint32_t width, uint32_t height, uint32_t
                 // uint8_t jj = *(p + 3 - row_stride);
                 // uint8_t l = *(p + 3 + row_stride);
 
-                __m512i jj = LOAD(p + 3 - row_stride);
-                __m512i l = LOAD(p + 3 + row_stride);
+                __m512i jj = _mm512_loadu_si512(p + 3 - row_stride);
+                __m512i l = _mm512_loadu_si512(p + 3 + row_stride);
 
                 CHECK_BARRIER_AXV512(lo, hi, jj, ans_j);
                 CHECK_BARRIER_AXV512(lo, hi, l, ans_l);
@@ -224,7 +211,7 @@ void fast10_avx512_32x2(uint8_t* data, uint32_t width, uint32_t height, uint32_t
                 const uint128_t ans_ghi = ans_g & ans_h & ans_i;
                 possible &= ans_j | (ans_d & ans_o & ans_ghi);
                 possible &= ans_l | (ans_m & ans_a & ans_ghi);
-                if (!possible)
+                if(!possible)
                     continue;
             }
 
@@ -244,25 +231,15 @@ void fast10_avx512_32x2(uint8_t* data, uint32_t width, uint32_t height, uint32_t
 
             ImageRef* corner_ptr = corners.data() + size;
 
-            __m512i ys = _mm512_set1_epi32(y);
-
-            for (size_t j = 0; j < 2; j++) {
-                __m512i xs = _mm512_add_epi32(_mm512_set1_epi32(x), offsets);
-
-                for (size_t i = 0; i < 32; i += 8) {
-                    __m512i data = _mm512_mask_blend_epi32(blend_mask, xs, ys);
-
-                    __mmask8 mask_compress = possible;
-                    int inserted = _popcnt32(mask_compress);
-                    _mm512_mask_compressstoreu_epi64(corner_ptr, mask_compress, data);
-                    corner_ptr += inserted;
-
-                    xs = _mm512_add_epi32(xs, x_increment);
-                    possible = possible >> 8;
-                }
-
-                ys = _mm512_add_epi32(ys, y_increment);
+            for(size_t i = 0; i < 64; i+=8){
+                __m512i data = _mm512_set_epi32(y, x + i + 7, y, x + i + 6, y, x + i + 5, y, x + i + 4, y, x + i + 3, y, x + i + 2, y, x + i + 1, y, x + i);
+                __mmask8 mask_compress = possible >> i;
+                int inserted = _popcnt32(mask_compress);
+                _mm512_mask_compressstoreu_epi64(corner_ptr, mask_compress, data);
+                corner_ptr += inserted;
             }
+
+
 
             // //todo change for 512
             // for (uint128_t i = 0; i < 64; i++) {
@@ -272,27 +249,15 @@ void fast10_avx512_32x2(uint8_t* data, uint32_t width, uint32_t height, uint32_t
             // }
 
         }
-    }
 
 #if PEELING_ENABLED
-    for (int y = 3; y < yend; y++)
-    {
         for (int x = xend; x < width - 3; x++) {
             const uint8_t* p = data + y * row_stride + x;
             if (CVD::is_corner_10<CVD::Less>(p, row_stride, barrier) || CVD::is_corner_10<CVD::Greater>(p, row_stride, barrier))
                 corners.push_back(ImageRef(x, y));
         }
-    }
-
-    for (int y = yend; y < height - 3; y++)
-    {
-        for (int x = 3; x < width - 3; x++) {
-            const uint8_t* p = data + y * row_stride + x;
-            if (CVD::is_corner_10<CVD::Less>(p, row_stride, barrier) || CVD::is_corner_10<CVD::Greater>(p, row_stride, barrier))
-                corners.push_back(ImageRef(x, y));
-        }
-    }
 #endif
+    }
 }
 
 #endif
