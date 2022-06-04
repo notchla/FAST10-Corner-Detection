@@ -418,7 +418,7 @@ void fast10_avx2_vecpeeling(uint8_t* data, uint32_t width, uint32_t height, uint
         ///////////// PEELING ////////////////////////////////////////////////////
 #if PEELING_ENABLED
 
-        for (int x = xend; x < width - 3; x += 32)
+        for (int x = xend - 3; x < width - 3; x += 32)
         {
 #if COUNT_CHECKS
             check[0]++;
@@ -598,7 +598,7 @@ void fast10_avx2_vecpeeling(uint8_t* data, uint32_t width, uint32_t height, uint
 
             possible |= (possible >> 32);
 
-            for (uint64_t i = 0; i < (width - 3 - xend); i++) {
+            for (uint64_t i = 3; i < 32; i++) {
                 if (possible & ((uint64_t)1 << i)) {
 #if COUNT_CHECKS
                     check[9]++;
