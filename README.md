@@ -1,5 +1,5 @@
 # ASL Project Group 40 - SS2022
-#Project FAST10 Corner Detection
+# Project FAST10 Corner Detection
 
 ## Folder Structure
 
