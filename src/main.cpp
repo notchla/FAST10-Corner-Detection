@@ -178,7 +178,7 @@ void count_dataset_checks(const fs::path& out_path, vector<DataSet>& datasets) {
 }
 
 
-atomic_uint64_t warm_cache_counter;
+std::atomic<uint64_t> warm_cache_counter;
 
 void randomized_performance_plot(const fs::path& out_path, const fs::path& image_path, const vector<pair<string, fast_func*>>& functions) {
     CVD::Image<CVD::byte> full;
@@ -212,7 +212,7 @@ void randomized_performance_plot(const fs::path& out_path, const fs::path& image
 
             // Number of different images to test to avoid training the branch predictor and not fitting the measurements to a single image
             uint64_t target_size = 128 * 1024 * 1024;
-            uint64_t images_count = max(1ull, (target_size + (width * height - 1)) / (width * height));
+            uint64_t images_count = max((uint64_t)1, (target_size + (width * height - 1)) / (width * height));
 
             // Number of repetitions for performance measurements
             uint64_t repetition_count = 10;

@@ -52,7 +52,7 @@ void fast10_avx2_gather8x4(uint8_t* data, uint32_t width, uint32_t height, uint3
             {
                 // lo = *p - c_barrier < 0 ? 0 : *p - c_barrier;
                 // hi = *p + c_barrier > 255 ? 255 : *p + c_barrier;
-                const __m256i v = _mm256_i32gather_epi64((const int64_t*)p, offsets, 1);
+                const __m256i v = _mm256_i32gather_epi64((const long long int*)p, offsets, 1);
                 lo = _mm256_subs_epu8(v, barriers);
                 hi = _mm256_adds_epu8(barriers, v);
             }
@@ -62,8 +62,8 @@ void fast10_avx2_gather8x4(uint8_t* data, uint32_t width, uint32_t height, uint3
                 // uint8_t top = *(p - stride);
                 // uint8_t bottom = *(p + stride);
 
-                __m256i top = _mm256_i32gather_epi64((const int64_t*)(p - stride), offsets, 1);
-                __m256i bottom = _mm256_i32gather_epi64((const int64_t*)(p + stride), offsets, 1);
+                __m256i top = _mm256_i32gather_epi64((const long long int*)(p - stride), offsets, 1);
+                __m256i bottom = _mm256_i32gather_epi64((const long long int*)(p + stride), offsets, 1);
 
                 CHECK_BARRIER_AXV2(lo, hi, top, ans_b);
                 CHECK_BARRIER_AXV2(lo, hi, bottom, ans_e);
@@ -80,8 +80,8 @@ void fast10_avx2_gather8x4(uint8_t* data, uint32_t width, uint32_t height, uint3
                 // uint8_t ul = *(p - 2 - 2 * row_stride);
                 // uint8_t lr = *(p + 2 + 2 * row_stride);
 
-                __m256i ul = _mm256_i32gather_epi64((const int64_t*)(p - 2 - 2 * row_stride), offsets, 1);
-                __m256i lr = _mm256_i32gather_epi64((const int64_t*)(p + 2 + 2 * row_stride), offsets, 1);
+                __m256i ul = _mm256_i32gather_epi64((const long long int*)(p - 2 - 2 * row_stride), offsets, 1);
+                __m256i lr = _mm256_i32gather_epi64((const long long int*)(p + 2 + 2 * row_stride), offsets, 1);
 
                 CHECK_BARRIER_AXV2(lo, hi, ul, ans_m);
                 CHECK_BARRIER_AXV2(lo, hi, lr, ans_p);
@@ -100,8 +100,8 @@ void fast10_avx2_gather8x4(uint8_t* data, uint32_t width, uint32_t height, uint3
                 // uint8_t ll = *(p - 2 + 2 * row_stride);
                 // uint8_t ur = *(p + 2 - 2 * row_stride);
 
-                __m256i ll = _mm256_i32gather_epi64((const int64_t*)(p - 2 + 2 * row_stride), offsets, 1);
-                __m256i ur = _mm256_i32gather_epi64((const int64_t*)(p + 2 - 2 * row_stride), offsets, 1);
+                __m256i ll = _mm256_i32gather_epi64((const long long int*)(p - 2 + 2 * row_stride), offsets, 1);
+                __m256i ur = _mm256_i32gather_epi64((const long long int*)(p + 2 - 2 * row_stride), offsets, 1);
 
                 CHECK_BARRIER_AXV2(lo, hi, ll, ans_o);
                 CHECK_BARRIER_AXV2(lo, hi, ur, ans_n);
@@ -120,8 +120,8 @@ void fast10_avx2_gather8x4(uint8_t* data, uint32_t width, uint32_t height, uint3
                 // uint8_t left = *(p - 3);
                 // uint8_t right = *(p + 3);
 
-                __m256i left = _mm256_i32gather_epi64((const int64_t*)(p - 3), offsets, 1);
-                __m256i right = _mm256_i32gather_epi64((const int64_t*)(p + 3), offsets, 1);
+                __m256i left = _mm256_i32gather_epi64((const long long int*)(p - 3), offsets, 1);
+                __m256i right = _mm256_i32gather_epi64((const long long int*)(p + 3), offsets, 1);
 
                 CHECK_BARRIER_AXV2(lo, hi, left, ans_h);
                 CHECK_BARRIER_AXV2(lo, hi, right, ans_k);
@@ -140,8 +140,8 @@ void fast10_avx2_gather8x4(uint8_t* data, uint32_t width, uint32_t height, uint3
                 // uint8_t a = *(p - 1 - stride);
                 // uint8_t c = *(p + 1 - stride);
 
-                __m256i a = _mm256_i32gather_epi64((const int64_t*)(p - 1 - stride), offsets, 1);
-                __m256i c = _mm256_i32gather_epi64((const int64_t*)(p + 1 - stride), offsets, 1);
+                __m256i a = _mm256_i32gather_epi64((const long long int*)(p - 1 - stride), offsets, 1);
+                __m256i c = _mm256_i32gather_epi64((const long long int*)(p + 1 - stride), offsets, 1);
 
                 CHECK_BARRIER_AXV2(lo, hi, a, ans_a);
                 CHECK_BARRIER_AXV2(lo, hi, c, ans_c);
@@ -158,8 +158,8 @@ void fast10_avx2_gather8x4(uint8_t* data, uint32_t width, uint32_t height, uint3
 
             uint64_t ans_d, ans_f;
             {
-                __m256i d = _mm256_i32gather_epi64((const int64_t*)(p - 1 + stride), offsets, 1);
-                __m256i f = _mm256_i32gather_epi64((const int64_t*)(p + 1 + stride), offsets, 1);
+                __m256i d = _mm256_i32gather_epi64((const long long int*)(p - 1 + stride), offsets, 1);
+                __m256i f = _mm256_i32gather_epi64((const long long int*)(p + 1 + stride), offsets, 1);
 
                 //__m256i f = _mm256_insert_epi16(_mm256_srli_si256(d, 2), *(const unsigned short*)(p + 15 + stride), 7);
                 CHECK_BARRIER_AXV2(lo, hi, d, ans_d);
@@ -179,8 +179,8 @@ void fast10_avx2_gather8x4(uint8_t* data, uint32_t width, uint32_t height, uint3
                 // uint8_t g = *(p - 3 - row_stride);
                 // uint8_t ii = *(p - 3 + row_stride);
 
-                __m256i g = _mm256_i32gather_epi64((const int64_t*)(p - 3 - row_stride), offsets, 1);
-                __m256i ii = _mm256_i32gather_epi64((const int64_t*)(p - 3 + row_stride), offsets, 1);
+                __m256i g = _mm256_i32gather_epi64((const long long int*)(p - 3 - row_stride), offsets, 1);
+                __m256i ii = _mm256_i32gather_epi64((const long long int*)(p - 3 + row_stride), offsets, 1);
 
                 CHECK_BARRIER_AXV2(lo, hi, g, ans_g);
                 CHECK_BARRIER_AXV2(lo, hi, ii, ans_i);
@@ -200,8 +200,8 @@ void fast10_avx2_gather8x4(uint8_t* data, uint32_t width, uint32_t height, uint3
                 // uint8_t jj = *(p + 3 - row_stride);
                 // uint8_t l = *(p + 3 + row_stride);
 
-                __m256i jj = _mm256_i32gather_epi64((const int64_t*)(p + 3 - row_stride), offsets, 1);
-                __m256i l = _mm256_i32gather_epi64((const int64_t*)(p + 3 + row_stride), offsets, 1);
+                __m256i jj = _mm256_i32gather_epi64((const long long int*)(p + 3 - row_stride), offsets, 1);
+                __m256i l = _mm256_i32gather_epi64((const long long int*)(p + 3 + row_stride), offsets, 1);
 
                 CHECK_BARRIER_AXV2(lo, hi, jj, ans_j);
                 CHECK_BARRIER_AXV2(lo, hi, l, ans_l);

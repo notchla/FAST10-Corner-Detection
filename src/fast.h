@@ -13,6 +13,8 @@
 #include <algorithm>
 #include <sstream>
 
+#include <atomic>
+
 #ifdef WIN32
 #include <intrin.h>
 #include <immintrin.h>
