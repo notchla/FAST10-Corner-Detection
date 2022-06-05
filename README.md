@@ -1,13 +1,12 @@
-# ASL Project Group 40 - SS2022
-# Project FAST10 Corner Detection
+# Project FAST10 Corner Detection - ASL - FS2022
 
 ## Folder Structure
 
-`src` contains the algorithm implementation and optimizations
-`scrips` contains the python scripts to make the plots
-`output` contains the performance measurements
-`plots` contains the visual plots
-`uica` contains the assembly of the different checks and the analysis of the tool
+- `src` contains the algorithm implementation and optimizations
+- `scrips` contains the python scripts to make the plots
+- `output` contains the performance measurements
+- `plots` contains the visual plots
+- `uica` contains the assembly of the different checks and the analysis of the tool
 
 ## Build Instructions
 
@@ -20,7 +19,6 @@ sudo apt-get install libjpeg-dev libpng-dev libtiff-dev libx11-dev libavformat-d
 Then run  
 
 ```shell
-
 mkdir build
 cd build
 cmake ..
