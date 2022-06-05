@@ -19,6 +19,7 @@ int main(int argc, char** argv) {
         {"avx2", fast10_avx2},
 #if AVX512_ENABLED
         {"avx512", fast10_avx512},
+        {"avx512_16x4", fast10_avx512_16x4},
 #endif
     };
 
@@ -57,16 +58,18 @@ int main(int argc, char** argv) {
     ImageRef img_size(width, height);
     CVD::Image<CVD::byte> img = full.sub_image(img_start, img_size);
 
-    uint8_t* data = copy_image_to_worst_case_alignment(img, 64);
+    uint8_t* data = copy_image_aligned(img, 64);
     uint32_t row_stride = img.row_stride();
 
     // Number of repetitions for performance measurements
     double seconds = 10;
     double expected_cycles = (double)size;
     uint64_t count = std::max((uint64_t)3ull, (uint64_t)std::ceil(seconds * 2.4e9 / (double)expected_cycles)) * 9;
-    if (name == "sse2")
+    if (name.find("sse") != std::string::npos)
         count *= 16;
-    if (name == "avx2" || name == "avx2_blocking")
+    if (name.find("avx2") != std::string::npos)
+        count *= 32;
+    if (name.find("avx512") != std::string::npos)
         count *= 32;
 
     std::vector<ImageRef> corners;

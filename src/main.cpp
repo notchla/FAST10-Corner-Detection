@@ -200,11 +200,11 @@ void randomized_performance_plot(const fs::path& out_path, const fs::path& image
 
         FILE* outf = std::fopen((out_path / out_name.str()).generic_u8string().c_str(), "wb");
 
-        for (int i = 128; i <= 8192; i += 128)
+        for (int i = 128; i <= 8192 - 128; i += 128)
         //for (int i = 8192; i <= 8192; i += 32)
         {
             uint64_t width = i;
-            uint64_t height = i;
+            uint64_t height = i + 6;
             uint64_t size = width * height;
             uint32_t row_stride;
 
@@ -235,7 +235,7 @@ void randomized_performance_plot(const fs::path& out_path, const fs::path& image
                 ImageRef img_start(xoffset, yoffset);
 
                 CVD::Image<CVD::byte> img = full.sub_image(img_start, img_size);
-                uint8_t* data = copy_image_to_worst_case_alignment(img, 64);
+                uint8_t* data = copy_image_aligned(img, 64);
                 images.push_back(data);
 
                 row_stride = img.row_stride();
@@ -304,7 +304,7 @@ void randomized_performance_plot(const fs::path& out_path, const fs::path& image
     }
 }
 
-void performance_plot(const fs::path& out_path, const fs::path& image_path, const vector<pair<string, fast_func*>>& functions) {
+void roofline_plot(const fs::path& out_path, const fs::path& image_path, const vector<pair<string, fast_func*>>& functions) {
     CVD::Image<CVD::byte> full;
     CVD::img_load(full, image_path.string());
     assert(full.size().x >= 8192 && full.size().y >= 8192);
@@ -316,20 +316,20 @@ void performance_plot(const fs::path& out_path, const fs::path& image_path, cons
 
     for (auto& [name, func] : functions)
     {
-        stringstream out_name;
-        out_name << name << "_" << threshold;
+        vector<int> sizes = { 256, 8192 };
+
+        for (auto i : sizes) {
+            stringstream out_name;
+            out_name << name << "_" << threshold;
 
 #if COUNT_CHECKS
-        out_name << "_count.dat";
+            out_name << "_count_roofline_" << i << ".dat";
 #else
-        out_name << "_cycles.dat";
+            out_name << "_cycles_roofline_" << i << ".dat";
 #endif
 
-        FILE* outf = std::fopen((out_path / out_name.str()).generic_u8string().c_str(), "wb");
+            FILE* outf = std::fopen((out_path / out_name.str()).generic_u8string().c_str(), "wb");
 
-        //for (int i = 128; i <= 1024; i += 32)
-        for (int i = 8192; i <= 8192; i += 32)
-        {
             uint64_t width = i;
             uint64_t height = i;
             uint64_t size = width * height;
@@ -337,8 +337,8 @@ void performance_plot(const fs::path& out_path, const fs::path& image_path, cons
             ImageRef img_start(xoffset, yoffset);
             ImageRef img_size(width, height);
             CVD::Image<CVD::byte> img = full.sub_image(img_start, img_size);
-            
-            uint8_t* data = copy_image_to_worst_case_alignment(img, 64);
+
+            uint8_t* data = copy_image_aligned(img, 64);
             uint32_t row_stride = img.row_stride();
 
 #if COUNT_CHECKS
@@ -346,12 +346,15 @@ void performance_plot(const fs::path& out_path, const fs::path& image_path, cons
             count_checks(outf, func, img, threshold);
 #else
             // Number of repetitions for performance measurements
+            uint64_t seconds = 5;
             uint64_t expected_cycles = (double)size * 10;
-            uint64_t count = std::max((uint64_t)3ull, (uint64_t)std::ceil(1e9 / (double)expected_cycles));
-            if (name == "sse2_10")
+            uint64_t count = std::max((uint64_t)3ull, (uint64_t)std::ceil(seconds * 2.7e9 / (double)expected_cycles));
+            if (name.find("sse2") != string::npos) {
                 count *= 2;
-            if (name == "avx2_10" || name == "avx2_10_vecpeeling" || name == "avx2_10_vecpeeling_mask" || name == "avx2_10_unrolled_2" || name == "avx2_10_unrolled_3")
+            }
+            else if (name.find("avx") != string::npos) {
                 count *= 3;
+            }
 
             // Otherwise measure and output performance
             cout << name << " [" << width << "x" << height << "] | count:" << count << endl;
@@ -375,12 +378,11 @@ void performance_plot(const fs::path& out_path, const fs::path& image_path, cons
             uint64_t cycles = (double)measurements[measurements.size() / 2];
 
             fprintf(outf, "%16llu\n", cycles);
-
-            aligned_free(data);
 #endif
-        }
+            aligned_free(data);
 
-        std::fclose(outf);
+            std::fclose(outf);
+        }
     }
 }
 
@@ -397,36 +399,38 @@ int main(int argc, char** argv) {
 
     auto dataset = find_datasets(data_dir);
     vector<pair<string, fast_func*>> functions = {
-        // {"slow", fastX_slow}
-        {"scalar", fast10_scalar},
-        {"sse2", fast10_sse2},
-        {"avx2", fast10_avx2},
-        {"avx512", fast10_avx512},
-        // {"scalar_10_block", fast10_scalar_block},
-        {"avx2_unrolled_3", fast10_avx2_unrolled_3},
-        {"avx2_unrolled_2", fast10_avx2_unrolled_2},
-        {"avx2_blocking_256", fast10_avx2_blocking_256},
-        {"avx2_blocking_512", fast10_avx2_blocking_512},
-        {"avx2_blocking_1024", fast10_avx2_blocking_1024},
+         {"scalar", fast10_scalar},
+         {"sse2", fast10_sse2},
+         {"avx2", fast10_avx2},
 
-        // {"avx2_10_vecpeeling", fast10_avx2_vecpeeling},
-        // {"avx2_10_vecpeeling_mask", fast10_avx2_vecpeeling_mask},
+         // {"slow", fastX_slow},  
+         // {"scalar_10_block", fast10_scalar_block},
+         // {"avx2_unrolled_3", fast10_avx2_unrolled_3},
+         // {"avx2_unrolled_2", fast10_avx2_unrolled_2},
+         // {"avx2_blocking_256", fast10_avx2_blocking_256},
+         // {"avx2_blocking_512", fast10_avx2_blocking_512},
+         // {"avx2_blocking_1024", fast10_avx2_blocking_1024},
+         // {"avx2_16x2", fast10_avx2_16x2},
+         // {"avx2_vecpeeling", fast10_avx2_vecpeeling},
+         // {"avx2_10_vecpeeling_mask", fast10_avx2_vecpeeling_mask},
 
-        {"avx2_16x2", fast10_avx2_16x2},
-        {"avx512_32x2", fast10_avx512_32x2},
-        {"avx512_16x4", fast10_avx512_16x4},
-        {"avx512_8x8", fast10_avx512_8x8},
+#if AVX512_ENABLED
+         {"avx512", fast10_avx512},
+         // {"avx512_set", fast10_avx512_set},
+         // {"avx512_32x2", fast10_avx512_32x2},
+         // {"avx512_16x4", fast10_avx512_16x4},
+         // {"avx512_8x8", fast10_avx512_8x8},
+#endif
+         { "libcvd_sse2", libcvd_sse2 },
+         { "libcvd_if", libcvd_if },
     };
 
-    //run_tests(dataset, CVD::fast_corner_detect_10, functions);
+    run_tests(dataset, CVD::fast_corner_detect_10, functions);
+     
     //count_lane_checks(out_dir, "../data/box0_big.png", functions);
     //count_dataset_checks(out_dir, dataset);
-#if TRAIN_BP
-    //performance_plot(out_dir, "../data/box0_big.png", functions);
-#else
-    randomized_performance_plot(out_dir, "../data/box0_big.png", functions);
-#endif
-
+    //randomized_performance_plot(out_dir, "../data/box0_big.png", functions);
+    //roofline_plot(out_dir, "../data/box0_big.png", functions);
 
     return 0;
 }

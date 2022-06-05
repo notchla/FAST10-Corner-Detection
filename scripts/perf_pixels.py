@@ -22,9 +22,9 @@ def line_plot(xs, ys, names, xlabel, ylabel, title, x_log=False):
     plt.legend()
     plt.tight_layout()
 
+    ax = plt.gca()
     if x_log:
         plt.xscale('log')
-        ax = plt.gca()
         ticks = np.arange(4, 24, 2)
         ax.set_xticks(2 ** ticks)
         ax.xaxis.set_major_locator(FixedLocator(2**ticks))
@@ -32,48 +32,47 @@ def line_plot(xs, ys, names, xlabel, ylabel, title, x_log=False):
         ax.set_xticklabels([f"$2^{{{j:.0f}}}$" for j in ticks])
 
 
+    ax.set_ylim(bottom=0)
     plt.show()
 
-#plot_init_settings()
+data_dir = "../output/vectorization"
 
-data_dir = "../output/"
 
-names = [ "scalar_10", "sse2_10", "avx2_10","avx512_10", "avx512_10_32x2" , "avx512_10_16x4", "avx512_10_8x8"]
-lane_width = [ 1, 16, 32, 64, 64, 64, 64]
-compilers = [ "" ]
-
-# names = names[1:]
-# lane_width = lane_width[1:]
-
+names = [ f[:-14] for f in os.listdir(data_dir) if "cycles" in f]
 threshold = 25
-#names = names[1:]
 
 xs = []
 ys = []
 ns = []
 
-for comp in compilers:
-    for n, lw in zip(names, lane_width):
-        prefix = os.path.join(data_dir, f"{n}_{threshold}_")
-        cycles = [ int(l) for l in open(prefix + f"cycles{comp}.dat").readlines() ]
-        sizes = []
-        counts = []
-        for l in open(prefix + "count.dat").readlines():
-            nums = [int(x) for x in l.split()]
-            counts.append(nums[2:])
-            sizes.append((nums[0] - 6))# * (nums[1] - 6))
-        
-        xs.append(sizes)
-        #ys.append([ cy / s for cy, s in zip(cycles, sizes)])
-        #ys.append([ s[0] * ((16 if "sse2" in n else 32) if not "512" in n else 64) / cy for cy, s in zip(cycles, counts)])
-        ys.append([ (s[0] * lw) / cy for cy, s in zip(cycles, counts)])
-        #ys.append(np.array([ cy for cy, s in zip(cycles, counts)]))
-        #ys.append([ s / cy for cy, s in zip(cycles, sizes)])
-        ns.append(f"{n} {comp}")
+for n in names:
 
-        if "avx512" in n:
-            xs[-1] = xs[-1][1:]
-            ys[-1] = ys[-1][1:]
+    lw = 1
+    if "sse" in n:
+        lw = 16
+    elif "avx2" in n:
+        lw = 32
+    elif "avx512" in n:
+        lw = 64
 
-line_plot(xs, ys, ns, "n", "pixels per cycle", f"Fast 10, t={threshold}  n x n image (clang 13.0.1 -O3 -march=native)")
+    prefix = os.path.join(data_dir, f"{n}_{threshold}_")
+    cycles = [ int(l) for l in open(prefix + f"cycles.dat").readlines() ]
+    sizes = []
+    counts = []
+
+    for l in open(prefix + "count.dat").readlines():
+        nums = [int(x) for x in l.split()]
+        counts.append(nums[2:])
+        sizes.append((nums[0] - 6))# * (nums[1] - 6))
+    
+    xs.append(sizes)
+    ys.append([ (s[0] * lw) / cy for cy, s in zip(cycles, counts)])
+    ns.append(f"{n}")
+
+
+    if "avx512" in n:
+        xs[-1] = xs[-1][1:]
+        ys[-1] = ys[-1][1:]
+
+line_plot(xs, ys, ns, "n", "pixels per cycle", f"Fast 10 n x n image (i5 11400H Tigerlake, clang-cl 13.0.1 -O2 -arch:AVX512)")
 

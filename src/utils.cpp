@@ -28,14 +28,13 @@ vector<DataSet> find_datasets(const fs::path& data_path)
 }
 
 
-uint8_t* copy_image_to_worst_case_alignment(const CVD::Image<CVD::byte>& I, uint32_t alignment) {
+uint8_t* copy_image_aligned(const CVD::Image<CVD::byte>& I, uint32_t alignment) {
     uint64_t width = I.size().x;
     uint64_t height = I.size().y;
     uint64_t stride = width * ((width + alignment - 1) / width);
 
 #ifdef _WIN32
-    uint8_t* data = (uint8_t*)_aligned_offset_malloc(stride * height, alignment * 2, alignment);
-    assert(((uintptr_t)data & (alignment - 1)) == 0 && ((uintptr_t)data & (alignment * 2 - 1)) != 0);
+    uint8_t* data = (uint8_t*)_aligned_malloc(alignment, stride * height);
 #else
     uint8_t* data = (uint8_t*)aligned_alloc(alignment, stride * height);
 #endif

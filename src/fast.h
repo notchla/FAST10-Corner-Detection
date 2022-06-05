@@ -22,7 +22,7 @@
 #endif
 
 #ifndef COUNT_CHECKS
-#define COUNT_CHECKS true
+#define COUNT_CHECKS false
 #endif
 
 #if COUNT_CHECKS
@@ -47,7 +47,7 @@ extern uint8_t* lane_check;
 #endif
 
 #ifndef WARM_CACHE
-#define WARM_CACHE false
+#define WARM_CACHE true
 #endif
 
 #ifndef TRAIN_BP
@@ -67,6 +67,7 @@ inline uint64_t rdtsc() {
 
 namespace CVD {
     void fast_corner_detect_plain_9(const BasicImage<byte>& i, std::vector<ImageRef>& corners, int b);
+    void fast_corner_detect_plain_10(const BasicImage<byte>& i, std::vector<ImageRef>& corners, int b);
 #include <cvd_src/corner_9.h>
 #include <cvd_src/corner_10.h>
 }
@@ -108,4 +109,5 @@ void fast10_avx512_8x8(uint8_t* data, uint32_t width, uint32_t height, uint32_t 
 
 void fast10_avx512_set(uint8_t* data, uint32_t width, uint32_t height, uint32_t row_stride, std::vector<ImageRef>& corners, const int barrier);
 
-void libcvd_wrapper(uint8_t* data, uint32_t width, uint32_t height, uint32_t row_stride, std::vector<ImageRef>& corners, const int barrier, cvd_fast_func* libcvd_f);
+void libcvd_sse2(uint8_t* data, uint32_t width, uint32_t height, uint32_t row_stride, std::vector<ImageRef>& corners, const int barrier);
+void libcvd_if(uint8_t* data, uint32_t width, uint32_t height, uint32_t row_stride, std::vector<ImageRef>& corners, const int barrier);
