@@ -52,6 +52,6 @@ void aligned_free(void* data) {
 #ifdef _WIN32
     _aligned_free(data);
 #else
-    aligned_free(data);
+    free(data);
 #endif
 }
