@@ -48,8 +48,9 @@ void fast10_avx512_16x4(uint8_t* data, uint32_t width, uint32_t height, uint32_t
     xend -= xend % 16;
     yend -= (yend - 3) % 4;
 
+    int y;
 #if PEELING_ENABLED
-    for (int y = 3; y < yend; y += 4) {
+    for (y = 3; y < yend; y += 4) {
         for (int x = 3; x < 16; x += 16)
         {
 #if COUNT_CHECKS
@@ -265,10 +266,8 @@ void fast10_avx512_16x4(uint8_t* data, uint32_t width, uint32_t height, uint32_t
             // }
 
         }
-    }
 #endif
 
-    for (int y = 3; y < yend; y += 4) {
         for (int x = 16; x < xend; x += 16)
         {
 #if COUNT_CHECKS
@@ -482,10 +481,8 @@ void fast10_avx512_16x4(uint8_t* data, uint32_t width, uint32_t height, uint32_t
             // }
 
         }
-    }
 
 #if PEELING_ENABLED
-    for (int y = 3; y < yend; y += 4) {
         int x = xend - 3;
 #if COUNT_CHECKS
             check[0]++;
