@@ -48,6 +48,11 @@ void fast10_avx512_16x4(uint8_t* data, uint32_t width, uint32_t height, uint32_t
     xend -= xend % 16;
     yend -= (yend - 3) % 4;
 
+    __m512i offsets   = _mm512_set_epi32(0, 7, 0, 6, 0, 5, 0, 4, 0, 3, 0, 2, 0, 1, 0, 0);
+    __m512i increment = _mm512_set1_epi32(8);
+    __m512i y_increment = _mm512_set1_epi32(1);
+    __mmask16 blend_mask = 0xAAAA;
+
     int y;
 #if PEELING_ENABLED
     for (y = 3; y < yend; y += 4) {
@@ -243,16 +248,29 @@ void fast10_avx512_16x4(uint8_t* data, uint32_t width, uint32_t height, uint32_t
 
             ImageRef* corner_ptr = corners.data() + size;
 
+            __m512i ys = _mm512_set1_epi32(y);
+
             for (size_t j = 0; j < 4; j++) {
+                __m512i xs = _mm512_add_epi32(_mm512_set1_epi32(x), offsets);
                 for (size_t i = 0; i < 16; i += 8) {
-                    __m512i data = _mm512_set_epi32(y + j, x + i + 7, y + j, x + i + 6, y + j, x + i + 5, y + j, x + i + 4, y + j, x + i + 3, y + j, x + i + 2, y + j, x + i + 1, y + j, x + i);
-                    __mmask8 mask_compress = possible_64; 
+                    // __m512i data = _mm512_set_epi32(y + j, x + i + 7, y + j, x + i + 6, y + j, x + i + 5, y + j, x + i + 4, y + j, x + i + 3, y + j, x + i + 2, y + j, x + i + 1, y + j, x + i);
+                    // __mmask8 mask_compress = possible_64; 
+                    // int inserted = _popcnt32(mask_compress);
+                    // _mm512_mask_compressstoreu_epi64(corner_ptr, mask_compress, data);
+
+                    // corner_ptr += inserted;
+                    // possible_64 = possible_64 >> 8;
+                        __m512i data = _mm512_mask_blend_epi32(blend_mask, xs, ys);
+
+                    __mmask8 mask_compress = possible_64;
                     int inserted = _popcnt32(mask_compress);
                     _mm512_mask_compressstoreu_epi64(corner_ptr, mask_compress, data);
-
                     corner_ptr += inserted;
+
+                    xs = _mm512_add_epi32(xs, increment);
                     possible_64 = possible_64 >> 8;
                 }
+                ys = _mm512_add_epi32(ys, y_increment);
             }
 
 
@@ -458,16 +476,30 @@ void fast10_avx512_16x4(uint8_t* data, uint32_t width, uint32_t height, uint32_t
 
             ImageRef* corner_ptr = corners.data() + size;
 
+            __m512i ys = _mm512_set1_epi32(y);
+
             for (size_t j = 0; j < 4; j++) {
+                __m512i xs = _mm512_add_epi32(_mm512_set1_epi32(x), offsets);
                 for (size_t i = 0; i < 16; i += 8) {
-                    __m512i data = _mm512_set_epi32(y + j, x + i + 7, y + j, x + i + 6, y + j, x + i + 5, y + j, x + i + 4, y + j, x + i + 3, y + j, x + i + 2, y + j, x + i + 1, y + j, x + i);
-                    __mmask8 mask_compress = possible_64; 
+                    // __m512i data = _mm512_set_epi32(y + j, x + i + 7, y + j, x + i + 6, y + j, x + i + 5, y + j, x + i + 4, y + j, x + i + 3, y + j, x + i + 2, y + j, x + i + 1, y + j, x + i);
+                    // __mmask8 mask_compress = possible_64; 
+                    // int inserted = _popcnt32(mask_compress);
+                    // _mm512_mask_compressstoreu_epi64(corner_ptr, mask_compress, data);
+
+                    // corner_ptr += inserted;
+                    // possible_64 = possible_64 >> 8;
+                    __m512i data = _mm512_mask_blend_epi32(blend_mask, xs, ys);
+
+                    __mmask8 mask_compress = possible_64;
                     int inserted = _popcnt32(mask_compress);
                     _mm512_mask_compressstoreu_epi64(corner_ptr, mask_compress, data);
-
                     corner_ptr += inserted;
+
+                    xs = _mm512_add_epi32(xs, increment);
                     possible_64 = possible_64 >> 8;
                 }
+
+                ys = _mm512_add_epi32(ys, y_increment);
             }
 
 
@@ -674,16 +706,29 @@ void fast10_avx512_16x4(uint8_t* data, uint32_t width, uint32_t height, uint32_t
 
             ImageRef* corner_ptr = corners.data() + size;
 
+            __m512i ys = _mm512_set1_epi32(y);
+
             for (size_t j = 0; j < 4; j++) {
+                __m512i xs = _mm512_add_epi32(_mm512_set1_epi32(x), offsets);
                 for (size_t i = 0; i < 16; i += 8) {
-                    __m512i data = _mm512_set_epi32(y + j, x + i + 7, y + j, x + i + 6, y + j, x + i + 5, y + j, x + i + 4, y + j, x + i + 3, y + j, x + i + 2, y + j, x + i + 1, y + j, x + i);
-                    __mmask8 mask_compress = possible_64; 
+                    // __m512i data = _mm512_set_epi32(y + j, x + i + 7, y + j, x + i + 6, y + j, x + i + 5, y + j, x + i + 4, y + j, x + i + 3, y + j, x + i + 2, y + j, x + i + 1, y + j, x + i);
+                    // __mmask8 mask_compress = possible_64; 
+                    // int inserted = _popcnt32(mask_compress);
+                    // _mm512_mask_compressstoreu_epi64(corner_ptr, mask_compress, data);
+
+                    // corner_ptr += inserted;
+                    // possible_64 = possible_64 >> 8;
+                    __m512i data = _mm512_mask_blend_epi32(blend_mask, xs, ys);
+
+                    __mmask8 mask_compress = possible_64;
                     int inserted = _popcnt32(mask_compress);
                     _mm512_mask_compressstoreu_epi64(corner_ptr, mask_compress, data);
-
                     corner_ptr += inserted;
+
+                    xs = _mm512_add_epi32(xs, increment);
                     possible_64 = possible_64 >> 8;
                 }
+                ys = _mm512_add_epi32(ys, y_increment);
             }
 
 
