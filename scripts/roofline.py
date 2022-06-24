@@ -4,65 +4,16 @@ import numpy as np
 import os
 import seaborn as sns
 
+import ops
+
 sns.set_theme()
 
 uica_dir = "../uica"
 out_dir = "../output/roofline"
 
-algos = {
-    'scalar': {
-        'ops': [],
-        'vector_size': 1,
-        'relevant_ports': [0, 1, 5, 6],
-    },
 
-    'sse2': {
-        'ops': [],
-        'vector_size': 16,
-        'relevant_ports': [0, 1],
-    },
-
-    'avx2': {
-        'ops': [],
-        'vector_size': 32,
-        'relevant_ports': [0, 1],
-    },
-    
-    'avx2_16x2': {
-        'ops': [],
-        'vector_size': 32,
-        'relevant_ports': [0, 1],
-    },
-
-    'avx512': {
-        'ops': [],
-        'vector_size': 64,
-        'relevant_ports': [0, 5],
-    },
-
-    'avx512_16x4': {
-        'ops': [],
-        'vector_size': 64,
-        'relevant_ports': [0, 5],
-    },
-}
-
+algos = ops.get_algos(uica_dir)
 for k, v in algos.items():
-    for i in range(9):
-        for l in open(os.path.join(uica_dir, k.split("_")[0], f"{i}.txt"), encoding="utf-8").readlines():
-            if "Total" in l:
-                vals = l.split("\u2502")[4]
-
-                total = 0
-                for j in v['relevant_ports']:
-                    total += float(vals[j * 9 : j * 9 + 6])
-
-                total = round(total)
-                v['ops'].append(total)
-                break
-    for i in range(9):
-        for j in range(i + 1, 9):
-            v['ops'][j] -= v['ops'][i]
     print(k, v)
 
 #  scalar [ 22, 16, 18, 20, 14, 18, 17, 20, 3, ]
@@ -74,9 +25,9 @@ pi_avx512 = 64 * 2
 
 beta = (13 * 1024 * 1024 * 1024) / 2.7e9
 
-left_exp = -2
+left_exp = 1
 left = 2 ** left_exp
-right_exp = 8
+right_exp = 7
 right = 2 ** right_exp
 
 bottom_exp = -1
@@ -84,12 +35,18 @@ bottom = 2 ** bottom_exp
 top_exp = 10
 top = 2 ** top_exp
 
-plt.plot([0, right], [pi_scalar, pi_scalar], label = 'scalar')
-plt.plot([0, right], [pi_sse2,   pi_sse2  ], label = 'sse2')
-plt.plot([0, right], [pi_avx2,   pi_avx2  ], label = 'avx2')
-plt.plot([0, right], [pi_avx512,   pi_avx512  ], label = 'avx512')
+plt.plot([0, right], [pi_scalar, pi_scalar])
+plt.plot([0, right], [pi_sse2,   pi_sse2  ])
+plt.plot([0, right], [pi_avx2,   pi_avx2  ])
+plt.plot([0, right], [pi_avx512, pi_avx512])
+plt.plot([0, right], [0, beta * right])
 
-plt.plot([0, right], [0, beta * right], label = 'bandwidth')
+plt.text(2 ** (right_exp - 1), pi_scalar * 1.1, "scalar", color="blue")
+plt.text(2 ** (right_exp - 1), pi_sse2   * 1.1, "SSE2", color="orange")
+plt.text(2 ** (right_exp - 1), pi_avx2   * 1.1, "AVX2", color="green")
+plt.text(2 ** (right_exp - 1), pi_avx512 * 1.1, "AVX-512", color="red")
+
+plt.text(2 ** (right_exp - 2.5), pi_avx512 * 3, "Bandwidth 13GB/s", color="#8476b5")
 
 def compute_roofline_position(name, ops, vector_size, size):
     counts = np.array([int(v) for v in open(os.path.join(out_dir, f"{name}_25_count_roofline_{size}.dat")).read().split()[2:-1]],
@@ -98,6 +55,19 @@ def compute_roofline_position(name, ops, vector_size, size):
 
     w = counts.dot(ops) * vector_size
     q = counts[0] * vector_size
+
+    peak = 4
+    if "sse2" in name:
+        peak = 32
+    elif "avx2" in name:
+        peak = 64
+    elif "avx512" in name:
+        peak = 128
+    
+    peak_cycles = w / peak
+    peak_pixels_cy = q / peak_cycles
+    pixels_cy = q / cycles
+    print(f"Pixels/cycle ({name} {size}x{size}): {peak_pixels_cy}, measured: {pixels_cy}, percentage {pixels_cy / peak_pixels_cy * 100 : .2f}%")
 
     return w / q, w / cycles
 
@@ -113,10 +83,20 @@ markers[1][3] = "o"
 markers[0][5] = "+"
 markers[1][5] = "o"
 
-for i, size in enumerate([256, 8192]):
-    for (k, v), c, m in zip(algos.items(), colors, markers[i]):
+for i, (k, v) in enumerate(algos.items()):
+    for j, size in enumerate([256, 8192]):
+        c = colors[i]
+        m = markers[j][i]
+
         x, y = compute_roofline_position(k, v["ops"], v["vector_size"], size)
-        plt.plot(x, y, color=c, marker=m, linestyle="none", label=f"{k} {size}x{size}")
+        #print(f"{k}: {x}, {y}")
+
+        name_and_blocksize = k.split('_')
+        label = f'{name_and_blocksize[0]} - {"small" if size == 256 else "large"}'
+        if len(name_and_blocksize) > 1:
+            label += f" - blocked: {name_and_blocksize[-1]}"
+
+        plt.plot(x, y, color=c, marker=m, linestyle="none", label=label)
 
 plt.legend(loc="lower left")
 
@@ -149,7 +129,7 @@ ax.yaxis.set_major_locator(FixedLocator(2**ticks))
 ax.yaxis.set_minor_locator(NullLocator())
 ax.set_yticklabels([f"{2 ** j}" for j in ticks])
 
-plt.title('Core i5 11400H Tigerlake, single core, $\\beta$ = 13GB/s')
+plt.title('Core i5 11400H Tigerlake, single core, warm cache')
 
 
 plt.tight_layout()

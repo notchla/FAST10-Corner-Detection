@@ -34,7 +34,7 @@ uint8_t* copy_image_aligned(const CVD::Image<CVD::byte>& I, uint32_t alignment) 
     uint64_t stride = width * ((width + alignment - 1) / width);
 
 #ifdef _WIN32
-    uint8_t* data = (uint8_t*)_aligned_malloc(alignment, stride * height);
+    uint8_t* data = (uint8_t*)_aligned_malloc(stride * height, alignment);
 #else
     uint8_t* data = (uint8_t*)aligned_alloc(alignment, stride * height);
 #endif

@@ -5,12 +5,13 @@ import sys
 
 datasets = [
     "box",
-    "junk",
-    "maze",
+#    "junk",
+#    "maze",
 ]
 
 
 fig, axs = plt.subplots(len(datasets))
+axs =[ axs ]
 fig.set_size_inches(12, 8)
 
 block_sizes = [
@@ -21,7 +22,7 @@ block_sizes = [
     (32, 1),
     (16, 2),
     (8, 4),
-    (4, 8),
+    #(4, 8),
     (64, 1),
     (32, 2),
     (16, 4),
@@ -72,7 +73,7 @@ for index, name in enumerate(datasets):
     #     avg_checks = np.arange(1, 11).dot(data[:, i])
     #     print(f"{bw}x{bh} = {avg_checks}")
         
-    data = data[1:,:]
+    data = data[1:-1,:]
 
     if False:
         ax = axs[index]
@@ -88,10 +89,13 @@ for index, name in enumerate(datasets):
         ax = axs[index]
         for i in range(count):
             offset = (i - count / 2) * width
-            rects = ax.bar(x + offset, data[i,:], width, label=f"checks = {i}")
+            rects = ax.bar(x + offset, data[i,:] * 100, width, label=f"checks = {i}")
 
         ax.set_xticks(x, labels=labels)
         ax.grid(axis="y")
+
+        ax.set_xlabel("8 checks grouped by block size")
+        ax.set_ylabel("Percentage of blocks")
 
 plt.show()
 

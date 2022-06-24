@@ -53,10 +53,9 @@ void fast10_avx512_16x4(uint8_t* data, uint32_t width, uint32_t height, uint32_t
     __m512i y_increment = _mm512_set1_epi32(1);
     __mmask16 blend_mask = 0xAAAA;
 
-    int y;
-#if PEELING_ENABLED
-    for (y = 3; y < yend; y += 4) {
-        for (int x = 3; x < 16; x += 16)
+    for (int y = 3; y < yend; y += 4) {
+#if PEELING_ENABLED       
+    for (int x = 3; x < 16; x += 16)
         {
 #if COUNT_CHECKS
             check[0]++;
@@ -751,8 +750,8 @@ void fast10_avx512_16x4(uint8_t* data, uint32_t width, uint32_t height, uint32_t
             if (CVD::is_corner_10<CVD::Less>(p, row_stride, barrier) || CVD::is_corner_10<CVD::Greater>(p, row_stride, barrier))
                 corners.push_back(ImageRef(x, y));
         }
-    }
 #endif
+    }
 }
 
 #endif
